@@ -13,7 +13,7 @@ on:
         type: string
         required: false
       quadro:
-        description: "Quadro do vídeo longo (vazio = o quadro do dia da semana)"
+        description: "Quadro do vídeo longo (do dia = o quadro do dia da semana)"
         type: choice
         options: ["do dia", pauta_da_semana, siga_o_dinheiro, sem_pauta_explica, checagem_da_semana, quem_votou, linha_do_tempo, resumo_da_semana]
         default: "do dia"
@@ -29,6 +29,15 @@ on:
         description: "Só gerar os roteiros, sem renderizar os vídeos"
         type: boolean
         default: false
+      publicar_release:
+        description: "Também publicar os arquivos numa release (para baixar sem login)"
+        type: boolean
+        default: false
+  # Pedido por arquivo: enviar pedidos/<nome>.json dispara a produção (usado pelo assistente).
+  # Formato: {"acao": "hoje", "tema": "", "quadro": "", "quantos": 3, "viral_url": "", "somente_roteiro": false}
+  push:
+    branches: [main]
+    paths: ["pedidos/**.json"]
   # Para gerar sozinho todo dia, apague o "#" das 2 linhas abaixo (horário em UTC: 09:17 UTC = 06:17 em Brasília).
   # schedule:
   #   - cron: "17 9 * * *"
@@ -48,6 +57,50 @@ jobs:
       TZ: America/Sao_Paulo
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Ler o pedido
+        id: pedido
+        env:
+          IN_ACAO: ${{ inputs.acao }}
+          IN_TEMA: ${{ inputs.tema }}
+          IN_QUADRO: ${{ inputs.quadro }}
+          IN_QUANTOS: ${{ inputs.quantos }}
+          IN_VIRAL: ${{ inputs.viral_url }}
+          IN_ROTEIRO: ${{ inputs.somente_roteiro }}
+          IN_RELEASE: ${{ inputs.publicar_release }}
+          EVENTO: ${{ github.event_name }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          ev = os.environ["EVENTO"]
+          p = {"acao": "hoje", "tema": "", "quadro": "", "quantos": 3, "viral_url": "", "somente_roteiro": False, "release": False}
+          if ev == "push":
+              arqs = subprocess.run(["git", "diff", "--name-only", "--diff-filter=AM", "HEAD~1", "HEAD", "--", "pedidos/"],
+                                    capture_output=True, text=True).stdout.split()
+              arqs = [a for a in arqs if a.endswith(".json")]
+              if arqs:
+                  p.update(json.load(open(arqs[-1], encoding="utf-8")))
+              p["release"] = True
+              p["nome"] = os.path.splitext(os.path.basename(arqs[-1]))[0] if arqs else "pedido"
+          elif ev == "workflow_dispatch":
+              p.update({"acao": os.environ["IN_ACAO"] or "hoje", "tema": os.environ["IN_TEMA"],
+                        "quadro": "" if os.environ["IN_QUADRO"] in ("", "do dia") else os.environ["IN_QUADRO"],
+                        "quantos": os.environ["IN_QUANTOS"] or 3, "viral_url": os.environ["IN_VIRAL"],
+                        "somente_roteiro": os.environ["IN_ROTEIRO"] == "true", "release": os.environ["IN_RELEASE"] == "true"})
+          args = [p["acao"]]
+          if p.get("tema"): args += ["--tema", p["tema"]]
+          if p.get("quadro") and p["acao"] == "longo": args += ["--quadro", p["quadro"]]
+          if p["acao"] == "shorts" and p.get("quantos"): args += ["--quantos", str(p["quantos"])]
+          if p.get("viral_url"): args += ["--viral-url", p["viral_url"]]
+          if p.get("somente_roteiro"): args += ["--sem-render"]
+          json.dump(args, open("/tmp/args.json", "w"))
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"release={'true' if p.get('release') else 'false'}\n")
+              f.write(f"nome={p.get('nome', 'manual')}\n")
+          print("pedido:", p, "->", args)
+          PY
 
       - uses: actions/setup-python@v5
         with:
@@ -66,19 +119,8 @@ jobs:
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           MISTRAL_MODEL: ${{ vars.MISTRAL_MODEL }}
-          ACAO: ${{ inputs.acao || 'hoje' }}
-          TEMA: ${{ inputs.tema }}
-          QUADRO: ${{ inputs.quadro }}
-          QUANTOS: ${{ inputs.quantos }}
-          VIRAL_URL: ${{ inputs.viral_url }}
-          SOMENTE_ROTEIRO: ${{ inputs.somente_roteiro }}
         run: |
-          args=("$ACAO")
-          [ -n "$TEMA" ] && args+=(--tema "$TEMA")
-          [ -n "$QUADRO" ] && [ "$QUADRO" != "do dia" ] && [ "$ACAO" = "longo" ] && args+=(--quadro "$QUADRO")
-          [ "$ACAO" = "shorts" ] && [ -n "$QUANTOS" ] && args+=(--quantos "$QUANTOS")
-          [ -n "$VIRAL_URL" ] && args+=(--viral-url "$VIRAL_URL")
-          [ "$SOMENTE_ROTEIRO" = "true" ] && args+=(--sem-render)
+          mapfile -t args < <(python3 -c 'import json; print("\n".join(json.load(open("/tmp/args.json"))))')
           python -m estudio "${args[@]}"
 
       - name: Resumo na página da execução
@@ -96,10 +138,25 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
+      - name: Publicar numa release (pré-lançamento)
+        if: always() && steps.pedido.outputs.release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          shopt -s nullglob
+          arquivos=(saida/*/*.mp4 saida/*/*.srt saida/*/*_thumb.jpg saida/*/*.txt saida/*/*.json saida/*/RELATORIO.md)
+          [ ${#arquivos[@]} -eq 0 ] && { echo "nada para publicar"; exit 0; }
+          tag="producao-${{ github.run_number }}"
+          notas=$(ls saida/*/RELATORIO.md | tail -1)
+          gh release create "$tag" "${arquivos[@]}" --prerelease \
+            --title "Produção ${{ github.run_number }} — ${{ steps.pedido.outputs.nome }}" --notes-file "$notas"
+
       - name: Salvar histórico (para não repetir temas)
         if: always()
         run: |
           git config user.name "sem-pauta-estudio"
           git config user.email "actions@users.noreply.github.com"
           git add kit/history.json
-          git diff --cached --quiet || (git commit -m "Histórico de produção $(date +%F)" && git push)
+          git diff --cached --quiet && exit 0
+          git commit -m "Histórico de produção $(date +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 5; done
