@@ -85,12 +85,13 @@ class Producao:
         """Roteiro + checagem de fatos. Devolve (spec, erros_de_formato, afirmacoes_sem_fonte)."""
         spec, erros = R.pedir(usuario, validador, self.modelo, rotulo, max_tokens=max_tokens, log=self.log)
         if self.falso: return spec, erros, []
-        for rodada in range(2):
-            problemas = R.verificar(spec, fontes_texto, self.modelo)
-            self.log(f"  checagem {rodada + 1}: {len(problemas)} afirmação(ões) sem fonte")
-            if not problemas: return spec, erros, []
-            spec, erros = R.corrigir(spec, problemas, usuario, validador, self.modelo, rotulo, max_tokens)
-        return spec, erros, R.verificar(spec, fontes_texto, self.modelo)
+        for rodada in range(3):
+            graves, ressalvas = R.verificar(spec, fontes_texto, self.modelo)
+            self.log(f"  checagem {rodada + 1}: {len(graves)} grave(s), {len(ressalvas)} ressalva(s)")
+            spec["_ressalvas"] = ressalvas
+            if not graves or rodada == 2: return spec, erros, graves
+            spec, erros = R.corrigir(spec, graves, usuario, validador, self.modelo, rotulo, max_tokens)
+        return spec, erros, graves
 
     def salvar_fontes(self, nome, fontes):
         p = self.saida / f"{nome}_FONTES.md"
@@ -133,6 +134,9 @@ class Producao:
     def bloquear(self, spec, sem_fonte, fontes, formato, tema, avisos):
         """Guarda as fontes; se sobrou afirmação sem fonte, não renderiza e explica no relatório."""
         spec["_fontes"] = fontes
+        spec["fontes"] = [{"veiculo": f["veiculo"], "url": f["url"]} for f in fontes]   # as matérias realmente entregues
+        avisos += [f"ressalva bloco {p.get('bloco')}: \"{str(p.get('trecho', ''))[:140]}\" — {str(p.get('motivo', ''))[:220]}"
+                   for p in spec.get("_ressalvas", [])[:8]]
         if not sem_fonte: return False
         avisos.append(f"BLOQUEADO: {len(sem_fonte)} afirmação(ões) sem fonte depois de 2 correções — não renderizado:")
         avisos += [f"  bloco {p.get('bloco')}: \"{str(p.get('trecho', ''))[:160]}\" — {str(p.get('motivo', ''))[:160]}" for p in sem_fonte[:12]]
@@ -212,7 +216,7 @@ class Producao:
             try:
                 spec, erros, sem_fonte = self.roteirizar(usuario, lambda x: R.validar_short(x, urls_validas=urls), "short", ftexto)
             except ErroLLM as e:
-                self.avisos_gerais.append(f"Short '{t['tema']}': {e}"); continue
+                self.avisos_gerais.append(f"Short '{t['tema']}': {e}"); self.log(f"  ERRO: {e}"); continue
             avisos = [f"validação: {x}" for x in erros]
             if self.bloquear(spec, sem_fonte, fontes, "short", t["tema"], avisos): continue
             spec["_n"] = k
@@ -261,7 +265,7 @@ class Producao:
         try:
             spec, erros, sem_fonte = self.roteirizar(usuario, lambda x: R.validar_longo(x, urls_validas=urls), "longo", ftexto, 16000)
         except ErroLLM as e:
-            self.avisos_gerais.append(f"Longo: {e}"); return
+            self.avisos_gerais.append(f"Longo: {e}"); self.log(f"  ERRO: {e}"); return
         avisos = [f"validação: {x}" for x in erros] + ["confira todos os números (dado, gráfico, placar) na fonte antes de postar"]
         if self.bloquear(spec, sem_fonte, fontes, "longo", tema, avisos): return
         spec["_n"] = 10

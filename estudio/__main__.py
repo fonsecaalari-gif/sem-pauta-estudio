@@ -23,12 +23,17 @@ def main(argv=None):
     ap.add_argument("--data")
     a = ap.parse_args(argv)
     p = Producao(date.fromisoformat(a.data) if a.data else None, a.tts, not a.sem_render)
-    if a.acao == "hoje": p.hoje(a.viral_url)
-    elif a.acao == "shorts": p.shorts(a.quantos, a.tema)
-    elif a.acao == "longo": p.longo(a.quadro, a.tema)
-    elif a.acao == "tutorial": p.tutorial(a.tema)
-    elif a.acao == "produto": p.produto(a.viral_url, a.viral_print)
-    prontos = p.relatorio()
+    try:
+        if a.acao == "hoje": p.hoje(a.viral_url)
+        elif a.acao == "shorts": p.shorts(a.quantos, a.tema)
+        elif a.acao == "longo": p.longo(a.quadro, a.tema)
+        elif a.acao == "tutorial": p.tutorial(a.tema)
+        elif a.acao == "produto": p.produto(a.viral_url, a.viral_print)
+    except Exception as e:   # o relatório sai mesmo se algo quebrar no meio
+        import traceback; traceback.print_exc()
+        p.avisos_gerais.append(f"ERRO inesperado: {e.__class__.__name__}: {e}")
+    finally:
+        prontos = p.relatorio()
     if p.render and prontos == 0 and p.videos:
         sys.exit(1)
 

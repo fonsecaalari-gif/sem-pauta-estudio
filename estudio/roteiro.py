@@ -42,20 +42,15 @@ def _datas_fora(texto, hoje, dias=60):
     return fora
 
 
-def _comuns(spec, urls_validas, hoje=None):
+def _comuns(spec, urls_validas, hoje=None, janela=60):
     from datetime import date
     hoje = hoje or date.today()
     e = []
     for i, s in enumerate(spec.get("scenes", []), 1):
-        fora = _datas_fora(s.get("ficha", ""), hoje)
+        fora = _datas_fora(s.get("ficha", ""), hoje, janela)
         if fora: e.append(f"bloco {i}: a data da ficha ({', '.join(fora)}) não é recente — use a data do fato na fonte (hoje é {hoje:%d.%m.%Y})")
         if re.search(r"~\s*\d+\s*(p\b|pal)", s.get("narration", "")): e.append(f"bloco {i}: sobrou a marcação '~N palavras' na narração; apague")
-    if urls_validas is not None:
-        citadas = [f.get("url", "") for f in spec.get("fontes", []) if isinstance(f, dict)]
-        if not citadas: e.append("a lista 'fontes' está vazia: liste as fontes usadas, com os URLs exatos dos TEXTOS DE FONTE")
-        fora = [u for u in citadas if u not in urls_validas]
-        if fora: e.append("estes URLs em 'fontes' não estão nos TEXTOS DE FONTE (use só os URLs fornecidos): " + ", ".join(fora[:4]))
-    return e
+    return e   # a lista 'fontes' é preenchida pelo programa com as matérias realmente usadas
 
 
 def validar_short(spec, produto=False, urls_validas=None):
@@ -85,13 +80,12 @@ def validar_short(spec, produto=False, urls_validas=None):
     for k in ("title", "description", "slug"):
         if not spec.get(k): e.append(f"falta '{k}'")
     if len(spec.get("title", "")) > 100: e.append("título com mais de 100 caracteres")
-    if not produto and not spec.get("fontes"): e.append("falta a lista 'fontes'")
     if _todo(spec): e.append("ainda há 'TODO' no texto")
     return e
 
 
 def validar_longo(spec, minimo=1250, urls_validas=None):
-    e = _comuns(spec, urls_validas)
+    e = _comuns(spec, urls_validas, janela=365 * 200)   # história pode ter datas antigas; só não pode ser futura
     sc = spec.get("scenes") or []
     for i, s in enumerate(sc, 1):
         t = s.get("type")
@@ -147,10 +141,11 @@ def roteiro_numerado(spec):
 
 
 def verificar(spec, fontes_texto, modelo):
-    """Checagem: devolve a lista de afirmações sem fonte [{bloco, trecho, motivo}]."""
+    """Checagem: devolve (graves, ressalvas), cada uma [{bloco, trecho, motivo}]."""
     usuario = prompt("verificar", roteiro=roteiro_numerado(spec), fontes=fontes_texto)
     js = llm.conversar_json(sistema(), usuario, modelo, temperatura=0.0, max_tokens=4000, rotulo="verificar")
-    return [x for x in js.get("sem_fonte", []) if isinstance(x, dict)]
+    ok = lambda xs: [x for x in xs if isinstance(x, dict)]
+    return ok(js.get("graves", js.get("sem_fonte", []))), ok(js.get("ressalvas", []))
 
 
 def corrigir(spec, problemas, usuario_original, validador, modelo, rotulo, max_tokens=8000):
