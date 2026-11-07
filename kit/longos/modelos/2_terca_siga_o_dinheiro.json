@@ -1,0 +1,214 @@
+{
+  "slug": "AAAA-MM-DD_siga-o-dinheiro",
+  "quadro": "SIGA O DINHEIRO",
+  "dia": "terça",
+  "title": "Siga o Dinheiro: TODO",
+  "description": "TODO resumo em 1–2 frases.\n\n{CAPITULOS}\n\nFontes: TODO\nFotos: TODO (autor/licença)\nNarração: TODO (voz do apresentador ou voz sintética — declare)\n\nTODO pergunta? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+  "hashtags": [
+    "#SemPauta",
+    "#SigaODinheiro",
+    "#PolíticaBrasileira",
+    "TODO"
+  ],
+  "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "legendas_na_tela": false,
+  "thumb": {
+    "image": "imgs/TODO.jpg",
+    "texto": "TODO R$ X BI *pra quem*?",
+    "tamanho": 140
+  },
+  "scenes": [
+    {
+      "type": "abertura",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO R$ quanto e *pra quem*?",
+      "narration": "TODO ~70 palavras: gancho frio: o fato/pergunta mais forte do vídeo, sem 'olá'"
+    },
+    {
+      "type": "vinheta"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "De onde *vem*",
+      "subtitulo": "TODO subtítulo"
+    },
+    {
+      "type": "documento",
+      "image": "imgs/TODO_documento.png",
+      "credit": "Reprodução: TODO",
+      "headline": "TODO o trecho que *importa*",
+      "fonte": "TODO (Diário Oficial / projeto de lei / relatório)",
+      "destaque": [
+        0.07,
+        0.4,
+        0.8,
+        0.05
+      ],
+      "narration": "TODO ~120 palavras: leia/explique o trecho destacado do documento"
+    },
+    {
+      "type": "dado",
+      "image": "imgs/TODO.jpg",
+      "value": 0,
+      "decimals": 0,
+      "prefix": "",
+      "suffix": " TODO",
+      "label": "TODO o que esse número *significa*",
+      "fonte": "TODO",
+      "narration": "TODO ~90 palavras: o número e por que ele importa"
+    },
+    {
+      "type": "grafico",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO título do gráfico",
+      "fonte": "TODO (IBGE / Portal da Transparência / Câmara)",
+      "grafico": {
+        "tipo": "linha",
+        "rotulos": [
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO"
+        ],
+        "valores": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "unidade": "",
+        "decimals": 0,
+        "destaque": -1
+      },
+      "narration": "TODO ~135 palavras: conduza o olho pelo gráfico: começo, virada, ponto atual"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Para onde *vai*",
+      "subtitulo": "TODO subtítulo"
+    },
+    {
+      "type": "grafico",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO título do gráfico",
+      "fonte": "TODO (IBGE / Portal da Transparência / Câmara)",
+      "grafico": {
+        "tipo": "barras",
+        "rotulos": [
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO"
+        ],
+        "valores": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "unidade": "",
+        "decimals": 0,
+        "destaque": -1
+      },
+      "narration": "TODO ~135 palavras: conduza o olho pelo gráfico: começo, virada, ponto atual"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~135 palavras: o que aconteceu, quem, quando, com número",
+      "pontos": [
+        "TODO ponto 1",
+        "TODO ponto 2",
+        "TODO ponto 3"
+      ]
+    },
+    {
+      "type": "documento",
+      "image": "imgs/TODO_documento.png",
+      "credit": "Reprodução: TODO",
+      "headline": "TODO o trecho que *importa*",
+      "fonte": "TODO (Diário Oficial / projeto de lei / relatório)",
+      "destaque": [
+        0.07,
+        0.4,
+        0.8,
+        0.05
+      ],
+      "narration": "TODO ~105 palavras: leia/explique o trecho destacado do documento"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Quem *decide*",
+      "subtitulo": "TODO subtítulo"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~135 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "placar",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO nome do projeto",
+      "fonte": "Câmara dos Deputados — votação TODO",
+      "sim": 0,
+      "nao": 0,
+      "abst": 0,
+      "quorum": 257,
+      "resultado": "APROVADO",
+      "partidos": [
+        {
+          "sigla": "TODO",
+          "sim": 0,
+          "nao": 0
+        }
+      ],
+      "narration": "TODO ~105 palavras: placar, quem votou como, o que o quórum exigia"
+    },
+    {
+      "type": "leitura",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO nossa tese em 1 frase com *destaque*",
+      "pontos": [
+        "TODO argumento 1",
+        "TODO argumento 2",
+        "TODO argumento 3"
+      ],
+      "narration": "TODO ~165 palavras: começa com 'Na nossa leitura…'; só opinião aqui"
+    },
+    {
+      "type": "outro_lado",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO o melhor argumento do outro lado, com *atribuição*",
+      "autor": "TODO quem defende",
+      "narration": "TODO ~105 palavras: o argumento contrário mais forte, honesto"
+    },
+    {
+      "type": "encerramento",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO pergunta de *comentário*?",
+      "amanha": "Sem Pauta Explica",
+      "narration": "TODO ~50 palavras: pergunta + chamada do quadro de amanhã"
+    },
+    {
+      "type": "tela_final",
+      "duracao": 15
+    }
+  ]
+}

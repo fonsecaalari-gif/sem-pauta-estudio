@@ -1,0 +1,26 @@
+{
+  "modelo": "mistral-large-latest",
+  "modelo_rapido": "mistral-small-latest",
+  "voz": "pt-BR-AntonioNeural",
+  "shorts_por_dia": 3,
+  "trilha": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "busca_web_mistral": false,
+  "feeds": [
+    {"nome": "Agência Brasil", "url": "https://agenciabrasil.ebc.com.br/rss/ultimasnoticias/feed.xml"},
+    {"nome": "Agência Brasil — Política", "url": "https://agenciabrasil.ebc.com.br/rss/politica/feed.xml"},
+    {"nome": "Agência Brasil — Economia", "url": "https://agenciabrasil.ebc.com.br/rss/economia/feed.xml"},
+    {"nome": "Google Notícias — política", "url": "https://news.google.com/rss/search?q=pol%C3%ADtica+when:1d&hl=pt-BR&gl=BR&ceid=BR:pt-419"},
+    {"nome": "Google Notícias — Congresso", "url": "https://news.google.com/rss/search?q=Congresso+OR+STF+OR+Planalto+when:1d&hl=pt-BR&gl=BR&ceid=BR:pt-419"},
+    {"nome": "Google Notícias — economia", "url": "https://news.google.com/rss/search?q=economia+Brasil+when:1d&hl=pt-BR&gl=BR&ceid=BR:pt-419"}
+  ],
+  "licencas_aceitas": ["CC0", "Public domain", "CC BY", "CC BY-SA", "CC BY 2.0", "CC BY 3.0", "CC BY 3.0 br", "CC BY 4.0", "CC BY-SA 2.0", "CC BY-SA 3.0", "CC BY-SA 4.0"],
+  "grade_longo": {
+    "0": "1_segunda_pauta_da_semana",
+    "1": "2_terca_siga_o_dinheiro",
+    "2": "3_quarta_sem_pauta_explica",
+    "3": "4_quinta_checagem_da_semana",
+    "4": "5_sexta_quem_votou",
+    "5": "6_sabado_linha_do_tempo",
+    "6": "7_domingo_resumo_da_semana"
+  }
+}

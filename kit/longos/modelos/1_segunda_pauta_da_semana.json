@@ -1,0 +1,164 @@
+{
+  "slug": "AAAA-MM-DD_pauta-da-semana",
+  "quadro": "A PAUTA DA SEMANA",
+  "dia": "segunda",
+  "title": "A pauta da semana: TODO (≤ 70 caracteres)",
+  "description": "TODO resumo em 1–2 frases.\n\n{CAPITULOS}\n\nFontes: TODO\nFotos: TODO (autor/licença)\nNarração: TODO (voz do apresentador ou voz sintética — declare)\n\nTODO pergunta? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+  "hashtags": [
+    "#SemPauta",
+    "#APautaDaSemana",
+    "#PolíticaBrasileira",
+    "TODO"
+  ],
+  "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "legendas_na_tela": false,
+  "thumb": {
+    "image": "imgs/TODO.jpg",
+    "texto": "TODO O que decide sua *semana*",
+    "tamanho": 140
+  },
+  "scenes": [
+    {
+      "type": "abertura",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO o que decide sua *semana*",
+      "narration": "TODO ~70 palavras: gancho frio: o fato/pergunta mais forte do vídeo, sem 'olá'"
+    },
+    {
+      "type": "vinheta"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "TODO tema 1",
+      "subtitulo": "TODO dia e local da decisão"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~145 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "dado",
+      "image": "imgs/TODO.jpg",
+      "value": 0,
+      "decimals": 0,
+      "prefix": "",
+      "suffix": " TODO",
+      "label": "TODO o que esse número *significa*",
+      "fonte": "TODO",
+      "narration": "TODO ~80 palavras: o número e por que ele importa"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "TODO tema 2",
+      "subtitulo": "TODO dia e local da decisão"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~145 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "documento",
+      "image": "imgs/TODO_documento.png",
+      "credit": "Reprodução: TODO",
+      "headline": "TODO o trecho que *importa*",
+      "fonte": "TODO (Diário Oficial / projeto de lei / relatório)",
+      "destaque": [
+        0.07,
+        0.4,
+        0.8,
+        0.05
+      ],
+      "narration": "TODO ~95 palavras: leia/explique o trecho destacado do documento"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "TODO tema 3",
+      "subtitulo": "TODO dia e local da decisão"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~145 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "dado",
+      "image": "imgs/TODO.jpg",
+      "value": 0,
+      "decimals": 0,
+      "prefix": "",
+      "suffix": " TODO",
+      "label": "TODO o que esse número *significa*",
+      "fonte": "TODO",
+      "narration": "TODO ~80 palavras: o número e por que ele importa"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "TODO tema 4",
+      "subtitulo": "TODO dia e local da decisão"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~145 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "documento",
+      "image": "imgs/TODO_documento.png",
+      "credit": "Reprodução: TODO",
+      "headline": "TODO o trecho que *importa*",
+      "fonte": "TODO (Diário Oficial / projeto de lei / relatório)",
+      "destaque": [
+        0.07,
+        0.4,
+        0.8,
+        0.05
+      ],
+      "narration": "TODO ~95 palavras: leia/explique o trecho destacado do documento"
+    },
+    {
+      "type": "leitura",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO nossa tese em 1 frase com *destaque*",
+      "pontos": [
+        "TODO argumento 1",
+        "TODO argumento 2",
+        "TODO argumento 3"
+      ],
+      "narration": "TODO ~175 palavras: começa com 'Na nossa leitura…'; só opinião aqui"
+    },
+    {
+      "type": "outro_lado",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO o melhor argumento do outro lado, com *atribuição*",
+      "autor": "TODO quem defende",
+      "narration": "TODO ~110 palavras: o argumento contrário mais forte, honesto"
+    },
+    {
+      "type": "encerramento",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO pergunta de *comentário*?",
+      "amanha": "Siga o Dinheiro",
+      "narration": "TODO ~55 palavras: pergunta + chamada do quadro de amanhã"
+    },
+    {
+      "type": "tela_final",
+      "duracao": 15
+    }
+  ]
+}

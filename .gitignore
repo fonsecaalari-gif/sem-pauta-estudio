@@ -1,0 +1,12 @@
+saida/
+__pycache__/
+*.pyc
+.env
+kit/imgs/20*/
+kit/specs/20*
+kit/longos/20*
+kit/output/*
+!kit/output/.gitkeep
+kit/preview/
+kit/brand/3d/node_modules/
+kit/brand/3d/out/

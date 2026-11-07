@@ -1,0 +1,52 @@
+{
+  "slug": "AAAA-MM-DD_P_viral-mes-sem-gastar",
+  "title": "O desafio do mês sem gastar viralizou. Funciona?",
+  "description": "Link de afiliado: o canal recebe comissão se você comprar, sem custo extra para você.\n👉 A planilha que eu uso pra isso: https://LINK-DO-PRODUTO\n\nO vídeo que viralizou: TODO link do post original (@perfil, plataforma). Print usado como citação.\nImagens: TODO.\nNarração gerada por voz sintética.\n\nVocê já tentou um mês sem gastar? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+  "hashtags": [
+    "#SemPautaÚtil",
+    "#Shorts",
+    "#OrçamentoDoméstico",
+    "#FinançasPessoais"
+  ],
+  "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "vinheta": true,
+  "_exemplo": "EXEMPLO com viral e produto fictícios. Troque o print, o @ e os textos pelo post real e pelo produto de produtos/produto.md.",
+  "scenes": [
+    {
+      "type": "viral",
+      "image": "produtos/imgs/exemplo_print_viral.jpg",
+      "credit": "Print: @perfil_exemplo (TODO plataforma) — citação",
+      "ficha": "TODO PLATAFORMA · @PERFIL_EXEMPLO",
+      "tag": "VIRALIZOU",
+      "narration": "Esse vídeo viralizou essa semana: uma pessoa dizendo que passou o mês inteiro sem gastar nada. Funciona mesmo?"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/demo_papers.jpg",
+      "credit": "Imagem: TODO",
+      "tag": "O PROBLEMA",
+      "ficha": "POR QUE QUASE NINGUÉM CONSEGUE",
+      "headline": "O desafio falha no *gasto pequeno*",
+      "narration": "O problema é que o desafio corta o gasto grande e esquece o pequeno. O café, a entrega, a assinatura. É ali que o mês escapa.",
+      "motion": "left"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/demo_desk.jpg",
+      "credit": "Imagem: TODO",
+      "tag": "A SOLUÇÃO",
+      "ficha": "FAÇA HOJE",
+      "headline": "Anote *tudo* por 7 dias",
+      "narration": "A solução é mais simples que o desafio. Anote todo gasto por sete dias, até o de dois reais. No domingo, some só os pequenos e escolha um para cortar.",
+      "motion": "out"
+    },
+    {
+      "type": "pergunta",
+      "image": "imgs/demo_papers.jpg",
+      "credit": "Imagem: TODO",
+      "headline": "Você já tentou um mês *sem gastar?*",
+      "narration": "Você já tentou um mês sem gastar? Comenta aqui. E se quiser ir além, deixei na descrição a planilha que eu uso pra isso.",
+      "motion": "in"
+    }
+  ]
+}

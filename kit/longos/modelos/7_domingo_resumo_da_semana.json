@@ -1,0 +1,163 @@
+{
+  "slug": "AAAA-MM-DD_resumo-da-semana",
+  "quadro": "RESUMO DA SEMANA",
+  "dia": "domingo",
+  "title": "Resumo da semana: TODO",
+  "description": "TODO resumo em 1–2 frases.\n\n{CAPITULOS}\n\nFontes: TODO\nFotos: TODO (autor/licença)\nNarração: TODO (voz do apresentador ou voz sintética — declare)\n\nTODO pergunta? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+  "hashtags": [
+    "#SemPauta",
+    "#ResumoDaSemana",
+    "#PolíticaBrasileira",
+    "TODO"
+  ],
+  "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "legendas_na_tela": false,
+  "thumb": {
+    "image": "imgs/TODO.jpg",
+    "texto": "A semana em *7 fatos*",
+    "tamanho": 140
+  },
+  "scenes": [
+    {
+      "type": "abertura",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO a semana em *7 fatos*",
+      "narration": "TODO ~65 palavras: gancho frio: o fato/pergunta mais forte do vídeo, sem 'olá'"
+    },
+    {
+      "type": "vinheta"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "07",
+      "subtitulo": "TODO tema"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~140 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "06",
+      "subtitulo": "TODO tema"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~140 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "05",
+      "subtitulo": "TODO tema"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~140 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "04",
+      "subtitulo": "TODO tema"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~140 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "03",
+      "subtitulo": "TODO tema"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~140 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "02",
+      "subtitulo": "TODO tema"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~140 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "01",
+      "subtitulo": "TODO tema"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~140 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Vocês *comentaram*",
+      "subtitulo": "TODO subtítulo"
+    },
+    {
+      "type": "outro_lado",
+      "tag": "VOCÊ COMENTOU",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO comentário do público (com permissão / público)",
+      "autor": "@TODO",
+      "narration": "TODO ~80 palavras: leia o comentário e responda"
+    },
+    {
+      "type": "outro_lado",
+      "tag": "VOCÊ COMENTOU",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO comentário do público (com permissão / público)",
+      "autor": "@TODO",
+      "narration": "TODO ~80 palavras: leia o comentário e responda"
+    },
+    {
+      "type": "outro_lado",
+      "tag": "VOCÊ COMENTOU",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO comentário do público (com permissão / público)",
+      "autor": "@TODO",
+      "narration": "TODO ~80 palavras: leia o comentário e responda"
+    },
+    {
+      "type": "encerramento",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO pergunta de *comentário*?",
+      "amanha": "A Pauta da Semana",
+      "narration": "TODO ~60 palavras: pergunta + chamada do quadro de amanhã"
+    },
+    {
+      "type": "tela_final",
+      "duracao": 15
+    }
+  ]
+}

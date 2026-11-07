@@ -1,0 +1,184 @@
+{
+ "slug": "teste-explica-cpi",
+ "quadro": "SEM PAUTA EXPLICA",
+ "title": "TESTE — Como funciona uma CPI (e o que ela NÃO pode fazer) | Sem Pauta Explica",
+ "description": "CPI virou palavra do dia a dia na política, mas pouca gente sabe o que ela pode e o que não pode fazer. Neste Sem Pauta Explica: quem cria, quantas assinaturas precisa, quais são os poderes e onde termina uma CPI.\n\n{CAPITULOS}\n\nFontes: Constituição Federal, art. 58, § 3º; Regimento Interno da Câmara dos Deputados; jurisprudência do STF sobre os limites das CPIs.\nImagens: cenas 3D demonstrativas do Sem Pauta.\n\nQual CPI você acha que deveria ser aberta? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+ "hashtags": [
+  "#SemPauta",
+  "#SemPautaExplica",
+  "#CPI",
+  "#Congresso",
+  "#PolíticaBrasileira"
+ ],
+ "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+ "legendas_na_tela": false,
+ "thumb": {
+  "texto": "Teste *CPI*",
+  "busca_imagem": "Congresso"
+ },
+ "scenes": [
+  {
+   "type": "abertura",
+   "tag": "SEM PAUTA EXPLICA",
+   "headline": "CPI pode *prender* alguém?",
+   "narration": "Toda semana alguém fala em abrir uma CPI. Mas uma CPI pode prender alguém? Pode condenar? A resposta curta é não. E entender o porquê muda o jeito de ver o noticiário.",
+   "motion": "in",
+   "focus": [
+    0.5,
+    0.42
+   ],
+   "busca_imagem": "imgs/demo_city.jpg"
+  },
+  {
+   "type": "vinheta"
+  },
+  {
+   "type": "capitulo",
+   "titulo": "O que é uma *CPI*",
+   "subtitulo": "De onde ela vem e quem pode criar"
+  },
+  {
+   "type": "documento",
+   "headline": "Um terço *basta* para criar",
+   "fonte": "Constituição Federal, art. 58, § 3º",
+   "destaque": [
+    0.0673,
+    0.5262,
+    0.7416,
+    0.04
+   ],
+   "narration": "A CPI está na Constituição, no artigo cinquenta e oito. Ela é criada pela Câmara, pelo Senado, ou pelos dois juntos, a pedido de um terço dos parlamentares. E precisa de fato determinado e de prazo certo.",
+   "busca_imagem": "imgs/demo_doc_art58.png",
+   "url_documento": "https://exemplo.invalid/doc"
+  },
+  {
+   "type": "grafico",
+   "headline": "Quantas assinaturas são *necessárias*",
+   "fonte": "Constituição Federal, art. 58; composição atual das Casas",
+   "grafico": {
+    "tipo": "barras",
+    "rotulos": [
+     "Deputados (total)",
+     "Assinaturas p/ CPI na Câmara",
+     "Senadores (total)",
+     "Assinaturas p/ CPI no Senado"
+    ],
+    "valores": [
+     513,
+     171,
+     81,
+     27
+    ],
+    "destaque": 1
+   },
+   "narration": "Na Câmara, são quinhentos e treze deputados. Um terço é cento e setenta e um. No Senado, são oitenta e um senadores, e bastam vinte e sete assinaturas.",
+   "busca_imagem": "imgs/demo_h2.jpg"
+  },
+  {
+   "type": "dado",
+   "value": 171,
+   "suffix": " ASSINATURAS",
+   "label": "é o mínimo para criar uma CPI na Câmara: *um terço* dos 513 deputados.",
+   "fonte": "Constituição Federal, art. 58, § 3º",
+   "narration": "Esse número importa. Cento e setenta e uma assinaturas, e não maioria. A regra foi pensada para que a minoria também consiga investigar.",
+   "busca_imagem": "imgs/demo_h1.jpg"
+  },
+  {
+   "type": "capitulo",
+   "titulo": "Os *poderes*",
+   "subtitulo": "O que a CPI pode fazer"
+  },
+  {
+   "type": "fato",
+   "ficha": "FATO · FONTE: CONSTITUIÇÃO E STF",
+   "tag": "PODE",
+   "pontos": [
+    "Convocar testemunhas e investigados para depor",
+    "Quebrar sigilo *bancário*, *fiscal* e de registros telefônicos, com decisão fundamentada",
+    "Requisitar documentos de órgãos públicos",
+    "Pedir perícias e ouvir especialistas"
+   ],
+   "narration": "A Constituição dá à CPI poderes de investigação próprios das autoridades judiciais. Ela pode convocar testemunhas, quebrar sigilo bancário e fiscal, acessar registros telefônicos e requisitar documentos.",
+   "motion": "left",
+   "busca_imagem": "imgs/demo_h2.jpg"
+  },
+  {
+   "type": "checagem",
+   "credit": "Imagem demonstrativa · cena 3D Sem Pauta",
+   "tag": "CHECAGEM",
+   "afirmacao": "A CPI pode mandar prender e condenar os investigados.",
+   "autor": "frase comum nas redes",
+   "veredito": "FALSO",
+   "explicacao": "CPI *investiga*, não julga. Ela não pode condenar, decretar prisão (só em flagrante), mandar grampear telefone nem fazer busca em casa sem ordem judicial. O resultado vira um relatório, enviado ao *Ministério Público*.",
+   "fonte": "Constituição Federal, art. 58; decisões do STF",
+   "narration": "Agora, a frase que mais circula: CPI pode prender e condenar? Falso. CPI investiga, não julga. Ela não pode condenar ninguém, não pode decretar prisão, a não ser em flagrante, não pode autorizar escuta telefônica, nem busca e apreensão em casa. Isso depende de um juiz."
+  },
+  {
+   "type": "capitulo",
+   "titulo": "Como *termina*",
+   "subtitulo": "Do requerimento ao relatório"
+  },
+  {
+   "type": "linha_do_tempo",
+   "tag": "O CAMINHO DE UMA CPI",
+   "eventos": [
+    {
+     "ano": "Passo 1",
+     "texto": "Requerimento com assinaturas de *um terço* da Casa"
+    },
+    {
+     "ano": "Passo 2",
+     "texto": "Instalação: partidos indicam membros, presidente e relator"
+    },
+    {
+     "ano": "Passo 3",
+     "texto": "Investigação: depoimentos, documentos, quebras de sigilo"
+    },
+    {
+     "ano": "Passo 4",
+     "texto": "Relatório final votado pela comissão"
+    },
+    {
+     "ano": "Passo 5",
+     "texto": "Conclusões enviadas ao *Ministério Público* e outros órgãos"
+    }
+   ],
+   "narration": "O caminho é este. Primeiro, o requerimento com as assinaturas. Depois, a instalação, com membros indicados pelos partidos. Então vem a investigação. No fim, o relator apresenta o relatório, que é votado. E as conclusões seguem para o Ministério Público, que decide se processa."
+  },
+  {
+   "type": "leitura",
+   "headline": "CPI é ferramenta da *minoria*",
+   "pontos": [
+    "A regra de um terço existe para a oposição conseguir investigar",
+    "Por isso maiorias costumam tentar *atrasar* a instalação",
+    "Quem decide se vira processo é o Ministério Público, não o plenário"
+   ],
+   "narration": "Na nossa leitura, a CPI é uma das poucas ferramentas que a minoria tem para investigar quem governa. Por isso, quem está no poder costuma tentar atrasar a instalação. Vale ficar de olho em quem trava.",
+   "busca_imagem": "imgs/demo_city.jpg"
+  },
+  {
+   "type": "outro_lado",
+   "headline": "CPIs viram *palanque político* e muitas terminam sem punição.",
+   "autor": "crítica frequente de parlamentares e analistas",
+   "narration": "O outro lado: muita gente critica as CPIs por virarem palanque político, com muito holofote e pouca punição no final. É uma crítica que merece ser levada a sério.",
+   "busca_imagem": "imgs/demo_h1.jpg"
+  },
+  {
+   "type": "encerramento",
+   "headline": "Qual CPI *deveria* ser aberta?",
+   "amanha": "Siga o Dinheiro",
+   "narration": "E você? Qual CPI acha que deveria ser aberta hoje? Comenta aqui. Amanhã tem Siga o Dinheiro.",
+   "busca_imagem": "imgs/demo_h2.jpg"
+  },
+  {
+   "type": "tela_final",
+   "duracao": 12
+  }
+ ],
+ "fontes": [
+  {
+   "veiculo": "Constituição Federal",
+   "url": "https://exemplo.invalid/cf"
+  }
+ ]
+}

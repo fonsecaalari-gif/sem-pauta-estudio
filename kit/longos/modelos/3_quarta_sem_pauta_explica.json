@@ -1,0 +1,231 @@
+{
+  "slug": "AAAA-MM-DD_explica",
+  "quadro": "SEM PAUTA EXPLICA",
+  "dia": "quarta",
+  "title": "Como funciona TODO | Sem Pauta Explica",
+  "description": "TODO resumo em 1–2 frases.\n\n{CAPITULOS}\n\nFontes: TODO\nFotos: TODO (autor/licença)\nNarração: TODO (voz do apresentador ou voz sintética — declare)\n\nTODO pergunta? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+  "hashtags": [
+    "#SemPauta",
+    "#SemPautaExplica",
+    "#PolíticaBrasileira",
+    "TODO"
+  ],
+  "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "legendas_na_tela": false,
+  "thumb": {
+    "image": "imgs/TODO.jpg",
+    "texto": "Como funciona *TODO*",
+    "tamanho": 140
+  },
+  "scenes": [
+    {
+      "type": "abertura",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO a pergunta que todo mundo *faz*",
+      "narration": "TODO ~60 palavras: gancho frio: o fato/pergunta mais forte do vídeo, sem 'olá'"
+    },
+    {
+      "type": "vinheta"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "O que *é*",
+      "subtitulo": "TODO subtítulo"
+    },
+    {
+      "type": "documento",
+      "image": "imgs/TODO_documento.png",
+      "credit": "Reprodução: TODO",
+      "headline": "TODO o trecho que *importa*",
+      "fonte": "TODO (Diário Oficial / projeto de lei / relatório)",
+      "destaque": [
+        0.07,
+        0.4,
+        0.8,
+        0.05
+      ],
+      "narration": "TODO ~105 palavras: leia/explique o trecho destacado do documento"
+    },
+    {
+      "type": "grafico",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO título do gráfico",
+      "fonte": "TODO (IBGE / Portal da Transparência / Câmara)",
+      "grafico": {
+        "tipo": "barras",
+        "rotulos": [
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO"
+        ],
+        "valores": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "unidade": "",
+        "decimals": 0,
+        "destaque": -1
+      },
+      "narration": "TODO ~90 palavras: conduza o olho pelo gráfico: começo, virada, ponto atual"
+    },
+    {
+      "type": "dado",
+      "image": "imgs/TODO.jpg",
+      "value": 0,
+      "decimals": 0,
+      "prefix": "",
+      "suffix": " TODO",
+      "label": "TODO o que esse número *significa*",
+      "fonte": "TODO",
+      "narration": "TODO ~65 palavras: o número e por que ele importa"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Como *funciona*",
+      "subtitulo": "TODO subtítulo"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~130 palavras: o que aconteceu, quem, quando, com número",
+      "pontos": [
+        "TODO ponto 1",
+        "TODO ponto 2",
+        "TODO ponto 3"
+      ]
+    },
+    {
+      "type": "linha_do_tempo",
+      "tag": "LINHA DO TEMPO",
+      "eventos": [
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        },
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        },
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        },
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        },
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        }
+      ],
+      "narration": "TODO ~145 palavras: uma frase por evento, na ordem"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "O que *não* é",
+      "subtitulo": "TODO subtítulo"
+    },
+    {
+      "type": "checagem",
+      "tag": "CHECAGEM 1",
+      "afirmacao": "TODO frase exata que viralizou",
+      "autor": "TODO quem disse/onde circulou",
+      "veredito": "FALSO",
+      "explicacao": "TODO o que os dados mostram, com *fonte*",
+      "fonte": "TODO",
+      "narration": "TODO ~145 palavras: leia a frase, dê o veredito, explique com a fonte"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~105 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Na *prática*",
+      "subtitulo": "TODO subtítulo"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~120 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "grafico",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO título do gráfico",
+      "fonte": "TODO (IBGE / Portal da Transparência / Câmara)",
+      "grafico": {
+        "tipo": "linha",
+        "rotulos": [
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO"
+        ],
+        "valores": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "unidade": "",
+        "decimals": 0,
+        "destaque": -1
+      },
+      "narration": "TODO ~105 palavras: conduza o olho pelo gráfico: começo, virada, ponto atual"
+    },
+    {
+      "type": "leitura",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO nossa tese em 1 frase com *destaque*",
+      "pontos": [
+        "TODO argumento 1",
+        "TODO argumento 2",
+        "TODO argumento 3"
+      ],
+      "narration": "TODO ~145 palavras: começa com 'Na nossa leitura…'; só opinião aqui"
+    },
+    {
+      "type": "outro_lado",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO o melhor argumento do outro lado, com *atribuição*",
+      "autor": "TODO quem defende",
+      "narration": "TODO ~90 palavras: o argumento contrário mais forte, honesto"
+    },
+    {
+      "type": "encerramento",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO pergunta de *comentário*?",
+      "amanha": "Checagem da Semana",
+      "narration": "TODO ~45 palavras: pergunta + chamada do quadro de amanhã"
+    },
+    {
+      "type": "tela_final",
+      "duracao": 15
+    }
+  ]
+}

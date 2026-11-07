@@ -1,0 +1,186 @@
+{
+  "slug": "AAAA-MM-DD_linha-do-tempo",
+  "quadro": "LINHA DO TEMPO",
+  "dia": "sábado",
+  "title": "TODO: a história completa | Linha do Tempo",
+  "description": "TODO resumo em 1–2 frases.\n\n{CAPITULOS}\n\nFontes: TODO\nFotos: TODO (autor/licença)\nNarração: TODO (voz do apresentador ou voz sintética — declare)\n\nTODO pergunta? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+  "hashtags": [
+    "#SemPauta",
+    "#LinhaDoTempo",
+    "#PolíticaBrasileira",
+    "TODO"
+  ],
+  "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "legendas_na_tela": false,
+  "thumb": {
+    "image": "imgs/TODO.jpg",
+    "texto": "A história de *TODO*",
+    "tamanho": 140
+  },
+  "scenes": [
+    {
+      "type": "abertura",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO como chegamos *até aqui*",
+      "narration": "TODO ~65 palavras: gancho frio: o fato/pergunta mais forte do vídeo, sem 'olá'"
+    },
+    {
+      "type": "vinheta"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "O *começo*",
+      "subtitulo": "TODO período"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~160 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "linha_do_tempo",
+      "tag": "LINHA DO TEMPO",
+      "eventos": [
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        },
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        },
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        },
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        },
+        {
+          "ano": "TODO",
+          "texto": "TODO"
+        }
+      ],
+      "narration": "TODO ~160 palavras: uma frase por evento, na ordem"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "A *virada*",
+      "subtitulo": "TODO período"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~160 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "documento",
+      "image": "imgs/TODO_documento.png",
+      "credit": "Reprodução: TODO",
+      "headline": "TODO o trecho que *importa*",
+      "fonte": "TODO (Diário Oficial / projeto de lei / relatório)",
+      "destaque": [
+        0.07,
+        0.4,
+        0.8,
+        0.05
+      ],
+      "narration": "TODO ~115 palavras: leia/explique o trecho destacado do documento"
+    },
+    {
+      "type": "grafico",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO título do gráfico",
+      "fonte": "TODO (IBGE / Portal da Transparência / Câmara)",
+      "grafico": {
+        "tipo": "linha",
+        "rotulos": [
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO",
+          "TODO"
+        ],
+        "valores": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "unidade": "",
+        "decimals": 0,
+        "destaque": -1
+      },
+      "narration": "TODO ~145 palavras: conduza o olho pelo gráfico: começo, virada, ponto atual"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Hoje",
+      "subtitulo": "TODO período"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FATO · DD.MM.AAAA · FONTE: TODO",
+      "headline": "TODO manchete com *destaque*",
+      "narration": "TODO ~160 palavras: o que aconteceu, quem, quando, com número"
+    },
+    {
+      "type": "dado",
+      "image": "imgs/TODO.jpg",
+      "value": 0,
+      "decimals": 0,
+      "prefix": "",
+      "suffix": " TODO",
+      "label": "TODO o que esse número *significa*",
+      "fonte": "TODO",
+      "narration": "TODO ~85 palavras: o número e por que ele importa"
+    },
+    {
+      "type": "leitura",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO nossa tese em 1 frase com *destaque*",
+      "pontos": [
+        "TODO argumento 1",
+        "TODO argumento 2",
+        "TODO argumento 3"
+      ],
+      "narration": "TODO ~160 palavras: começa com 'Na nossa leitura…'; só opinião aqui"
+    },
+    {
+      "type": "outro_lado",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "headline": "TODO o melhor argumento do outro lado, com *atribuição*",
+      "autor": "TODO quem defende",
+      "narration": "TODO ~100 palavras: o argumento contrário mais forte, honesto"
+    },
+    {
+      "type": "encerramento",
+      "image": "imgs/TODO.jpg",
+      "headline": "TODO pergunta de *comentário*?",
+      "amanha": "Resumo da Semana",
+      "narration": "TODO ~50 palavras: pergunta + chamada do quadro de amanhã"
+    },
+    {
+      "type": "tela_final",
+      "duracao": 15
+    }
+  ]
+}

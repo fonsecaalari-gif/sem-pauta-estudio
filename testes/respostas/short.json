@@ -1,0 +1,60 @@
+{
+ "slug": "teste-isencao-ir",
+ "title": "TESTE — isenção do IR: quem ganha?",
+ "description": "Resumo de teste.\n\nFontes: Agência Exemplo https://exemplo.invalid/1\nFotos: (créditos automáticos)\nNarração gerada por voz sintética.\n\nQuem ganha com isso? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+ "hashtags": [
+  "#SemPauta",
+  "#Shorts",
+  "#Teste"
+ ],
+ "fontes": [
+  {
+   "veiculo": "Agência Exemplo",
+   "url": "https://exemplo.invalid/1"
+  }
+ ],
+ "scenes": [
+  {
+   "type": "gancho",
+   "tag": "TESTE",
+   "headline": "Isenção do IR *avança*",
+   "narration": "Este é um vídeo de teste do Sem Pauta Estúdio, gerado sem a Mistral.",
+   "busca_imagem": "Câmara dos Deputados"
+  },
+  {
+   "type": "fato",
+   "ficha": "FATO · TESTE · FONTE: EXEMPLO",
+   "headline": "Texto vai ao *Senado*",
+   "narration": "No teste, a Câmara aprova um projeto de exemplo e o texto segue para o Senado. Nada aqui é notícia real.",
+   "busca_imagem": "Senado Federal"
+  },
+  {
+   "type": "dado",
+   "value": 5000,
+   "decimals": 0,
+   "prefix": "R$ ",
+   "suffix": "",
+   "label": "é o valor *de exemplo* usado neste teste.",
+   "narration": "O número na tela é só de exemplo, para conferir a animação do contador.",
+   "busca_imagem": "Esplanada dos Ministérios"
+  },
+  {
+   "type": "leitura",
+   "headline": "Teste de *opinião*",
+   "narration": "Na nossa leitura, este bloco serve para conferir o fundo claro e o selo de opinião no teste.",
+   "busca_imagem": "Palácio do Planalto"
+  },
+  {
+   "type": "outro_lado",
+   "headline": "O outro lado *diria* algo aqui",
+   "narration": "O outro lado aparece aqui, com a citação atribuída, também como teste.",
+   "busca_imagem": "Congresso Nacional"
+  },
+  {
+   "type": "pergunta",
+   "headline": "O teste *funcionou*?",
+   "narration": "O teste funcionou? Se sim, a pipeline está pronta para a Mistral de verdade.",
+   "busca_imagem": "Congresso Nacional"
+  }
+ ]
+}

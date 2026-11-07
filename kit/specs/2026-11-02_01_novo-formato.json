@@ -1,0 +1,60 @@
+{
+  "slug": "2026-11-02_01_novo-formato",
+  "title": "O Sem Pauta mudou: fato de um lado, opinião do outro",
+  "description": "Novo formato do canal: cada Short tem blocos marcados na tela — fato com fonte, número, nossa leitura (opinião), o outro lado e a sua pergunta.\n\nFontes: Sem Pauta.\nImagens: cenas 3D demonstrativas do próprio canal.\nNarração gerada por voz sintética.\n\nQual tema a pauta está escondendo? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+  "hashtags": ["#SemPauta", "#Shorts", "#Jornalismo", "#Atualidades"],
+  "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "vinheta": true,
+  "scenes": [
+    {
+      "type": "gancho",
+      "image": "imgs/demo_city.jpg",
+      "credit": "Imagem demonstrativa · cena 3D Sem Pauta",
+      "tag": "NOVIDADE",
+      "headline": "O Sem Pauta *mudou.*",
+      "narration": "O Sem Pauta mudou. E a mudança é para você saber, na hora, o que é fato e o que é opinião.",
+      "motion": "in", "focus": [0.5, 0.42]
+    },
+    {
+      "type": "fato",
+      "image": "imgs/demo_papers.jpg",
+      "credit": "Imagem demonstrativa · cena 3D Sem Pauta",
+      "ficha": "FATO · 02.11.2026 · FONTE: SEM PAUTA",
+      "headline": "Cada vídeo agora tem *blocos* marcados",
+      "narration": "A partir de hoje, cada vídeo é dividido em blocos. O fato aparece com ficha, data e fonte na tela.",
+      "motion": "left", "focus": [0.5, 0.5]
+    },
+    {
+      "type": "dado",
+      "image": "imgs/demo_desk.jpg",
+      "credit": "Imagem demonstrativa · cena 3D Sem Pauta",
+      "value": 6, "decimals": 0, "prefix": "", "suffix": " BLOCOS",
+      "label": "em menos de *um minuto*: gancho, fato, número, leitura, outro lado e pergunta.",
+      "narration": "São seis blocos em menos de um minuto. Gancho, fato, número, nossa leitura, o outro lado e a sua pergunta."
+    },
+    {
+      "type": "leitura",
+      "image": "imgs/demo_city.jpg",
+      "credit": "Imagem demonstrativa · cena 3D Sem Pauta",
+      "headline": "Opinião com *nome* e sobrenome",
+      "narration": "Quando é opinião, a tela muda. Fundo claro, selo de opinião. Sem disfarce.",
+      "focus": [0.5, 0.45]
+    },
+    {
+      "type": "outro_lado",
+      "image": "imgs/demo_papers.jpg",
+      "credit": "Imagem demonstrativa · cena 3D Sem Pauta",
+      "headline": "Todo canal diz que é *imparcial*. Por isso a gente mostra a fonte.",
+      "narration": "E o outro lado? Tem quem diga que todo canal se diz imparcial. Por isso a gente mostra a fonte, e não pede confiança.",
+      "motion": "out"
+    },
+    {
+      "type": "pergunta",
+      "image": "imgs/demo_desk.jpg",
+      "credit": "Imagem demonstrativa · cena 3D Sem Pauta",
+      "headline": "Qual tema a pauta está *escondendo?*",
+      "narration": "Agora é com você. Qual tema a pauta está escondendo? Comenta aqui.",
+      "motion": "in"
+    }
+  ]
+}

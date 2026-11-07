@@ -1,0 +1,225 @@
+{
+  "slug": "AAAA-MM-DD_tutorial-TODO",
+  "quadro": "TUTORIAL DE DOMINGO",
+  "dia": "domingo",
+  "title": "Como TODO (passo a passo) | Tutorial Sem Pauta",
+  "description": "TODO o que você vai conseguir fazer em 1 frase.\n\n{CAPITULOS}\n\nLinks oficiais usados no vídeo:\nTODO\n\nProcedimento conferido em DD/MM/AAAA no site oficial. Se algo mudou, avise nos comentários.\nPrints: telas do serviço oficial, com dados pessoais borrados.\nNarração: TODO.\n\nQual tutorial você quer no próximo domingo? Comenta aí.\nSiga o Sem Pauta: https://youtube.com/@somos.sempauta",
+  "hashtags": [
+    "#SemPauta",
+    "#Tutorial",
+    "#PassoAPasso",
+    "TODO"
+  ],
+  "music": "brand/sfx/trilha_pulso_96bpm.ogg",
+  "legendas_na_tela": false,
+  "thumb": {
+    "image": "imgs/TODO.jpg",
+    "texto": "Como TODO em *7 passos*",
+    "tamanho": 140
+  },
+  "scenes": [
+    {
+      "type": "abertura",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "tag": "TUTORIAL DE DOMINGO",
+      "headline": "TODO o resultado que a pessoa *vai ter*",
+      "narration": "TODO ~60 palavras: o problema + a promessa realista ('em 10 minutos você vai saber…')"
+    },
+    {
+      "type": "vinheta"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Antes de *começar*",
+      "subtitulo": "O que separar e quem pode fazer"
+    },
+    {
+      "type": "checklist",
+      "headline": "Separe *isto*",
+      "itens": [
+        "TODO documento",
+        "TODO dado",
+        "TODO aparelho/conexão",
+        "TODO tempo estimado"
+      ],
+      "narration": "TODO ~90 palavras: cada item na ordem da lista"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FONTE: TODO SITE OFICIAL · CONFERIDO EM DD.MM.AAAA",
+      "tag": "QUEM PODE",
+      "pontos": [
+        "TODO quem tem direito / quem precisa",
+        "TODO prazo ou custo (gratuito?)",
+        "TODO onde fazer: app ou site oficial"
+      ],
+      "narration": "TODO ~130 palavras: quem pode, quanto custa, prazo, canal oficial"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Passo a *passo*",
+      "subtitulo": "TODO app ou site oficial"
+    },
+    {
+      "type": "passo",
+      "headline": "TODO ação do passo 1 com *destaque*",
+      "instrucao": "TODO onde clicar / o que preencher, com o nome do botão entre *asteriscos*",
+      "image": "imgs/TODO_passo1.png",
+      "tela": "celular",
+      "endereco": "TODO endereço oficial (só no modo computador)",
+      "destaque": [
+        0.05,
+        0.4,
+        0.9,
+        0.08
+      ],
+      "t_destaque": 1.2,
+      "borrar": [],
+      "narration": "TODO ~110 palavras: passo 1: o que fazer, onde clicar, o que aparece depois"
+    },
+    {
+      "type": "passo",
+      "headline": "TODO ação do passo 2 com *destaque*",
+      "instrucao": "TODO onde clicar / o que preencher, com o nome do botão entre *asteriscos*",
+      "image": "imgs/TODO_passo2.png",
+      "tela": "celular",
+      "endereco": "TODO endereço oficial (só no modo computador)",
+      "destaque": [
+        0.05,
+        0.4,
+        0.9,
+        0.08
+      ],
+      "t_destaque": 1.2,
+      "borrar": [],
+      "narration": "TODO ~110 palavras: passo 2: o que fazer, onde clicar, o que aparece depois"
+    },
+    {
+      "type": "passo",
+      "headline": "TODO ação do passo 3 com *destaque*",
+      "instrucao": "TODO onde clicar / o que preencher, com o nome do botão entre *asteriscos*",
+      "image": "imgs/TODO_passo3.png",
+      "tela": "celular",
+      "endereco": "TODO endereço oficial (só no modo computador)",
+      "destaque": [
+        0.05,
+        0.4,
+        0.9,
+        0.08
+      ],
+      "t_destaque": 1.2,
+      "borrar": [],
+      "narration": "TODO ~110 palavras: passo 3: o que fazer, onde clicar, o que aparece depois"
+    },
+    {
+      "type": "passo",
+      "headline": "TODO ação do passo 4 com *destaque*",
+      "instrucao": "TODO onde clicar / o que preencher, com o nome do botão entre *asteriscos*",
+      "image": "imgs/TODO_passo4.png",
+      "tela": "celular",
+      "endereco": "TODO endereço oficial (só no modo computador)",
+      "destaque": [
+        0.05,
+        0.4,
+        0.9,
+        0.08
+      ],
+      "t_destaque": 1.2,
+      "borrar": [],
+      "narration": "TODO ~110 palavras: passo 4: o que fazer, onde clicar, o que aparece depois"
+    },
+    {
+      "type": "passo",
+      "headline": "TODO ação do passo 5 com *destaque*",
+      "instrucao": "TODO onde clicar / o que preencher, com o nome do botão entre *asteriscos*",
+      "image": "imgs/TODO_passo5.png",
+      "tela": "celular",
+      "endereco": "TODO endereço oficial (só no modo computador)",
+      "destaque": [
+        0.05,
+        0.4,
+        0.9,
+        0.08
+      ],
+      "t_destaque": 1.2,
+      "borrar": [],
+      "narration": "TODO ~110 palavras: passo 5: o que fazer, onde clicar, o que aparece depois"
+    },
+    {
+      "type": "passo",
+      "headline": "TODO ação do passo 6 com *destaque*",
+      "instrucao": "TODO onde clicar / o que preencher, com o nome do botão entre *asteriscos*",
+      "image": "imgs/TODO_passo6.png",
+      "tela": "celular",
+      "endereco": "TODO endereço oficial (só no modo computador)",
+      "destaque": [
+        0.05,
+        0.4,
+        0.9,
+        0.08
+      ],
+      "t_destaque": 1.2,
+      "borrar": [],
+      "narration": "TODO ~110 palavras: passo 6: o que fazer, onde clicar, o que aparece depois"
+    },
+    {
+      "type": "passo",
+      "headline": "TODO ação do passo 7 com *destaque*",
+      "instrucao": "TODO onde clicar / o que preencher, com o nome do botão entre *asteriscos*",
+      "image": "imgs/TODO_passo7.png",
+      "tela": "celular",
+      "endereco": "TODO endereço oficial (só no modo computador)",
+      "destaque": [
+        0.05,
+        0.4,
+        0.9,
+        0.08
+      ],
+      "t_destaque": 1.2,
+      "borrar": [],
+      "narration": "TODO ~110 palavras: passo 7: o que fazer, onde clicar, o que aparece depois"
+    },
+    {
+      "type": "alerta",
+      "headline": "TODO o golpe ou erro mais *comum*",
+      "pontos": [
+        "TODO sinal de golpe",
+        "TODO erro que faz o pedido ser negado",
+        "TODO o que nunca fazer"
+      ],
+      "narration": "TODO ~120 palavras: golpes e erros comuns ligados a este serviço"
+    },
+    {
+      "type": "capitulo",
+      "titulo": "Se der *errado*",
+      "subtitulo": "Problemas comuns e saídas"
+    },
+    {
+      "type": "fato",
+      "image": "imgs/TODO.jpg",
+      "credit": "Foto: TODO",
+      "ficha": "FONTE: TODO",
+      "tag": "SE DER ERRADO",
+      "pontos": [
+        "TODO problema 1 → saída",
+        "TODO problema 2 → saída",
+        "TODO canal oficial de ajuda (telefone/site)"
+      ],
+      "narration": "TODO ~130 palavras: os 3 problemas mais comuns e como resolver"
+    },
+    {
+      "type": "encerramento",
+      "image": "imgs/TODO.jpg",
+      "headline": "Qual tutorial você quer no *próximo domingo?*",
+      "amanha": "A Pauta da Semana",
+      "narration": "TODO ~50 palavras: recapitule em 1 frase + peça o tema do próximo tutorial"
+    },
+    {
+      "type": "tela_final",
+      "duracao": 15
+    }
+  ]
+}

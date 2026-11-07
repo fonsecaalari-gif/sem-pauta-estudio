@@ -1,0 +1,16 @@
+{
+  "name": "3d",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "postprocessing": "^6.36.4",
+    "three": "^0.170.0"
+  }
+}

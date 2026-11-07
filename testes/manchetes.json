@@ -1,0 +1,26 @@
+[
+ {
+  "id": 0,
+  "titulo": "Câmara aprova projeto que amplia isenção do Imposto de Renda",
+  "resumo": "Texto segue para o Senado; isenção valeria para quem ganha até R$ 5 mil.",
+  "link": "https://exemplo.invalid/1",
+  "fonte": "Agência Exemplo",
+  "data": "06/11 18:00"
+ },
+ {
+  "id": 1,
+  "titulo": "STF retoma julgamento sobre marco temporal",
+  "resumo": "Plenário analisa recursos.",
+  "link": "https://exemplo.invalid/2",
+  "fonte": "Agência Exemplo",
+  "data": "06/11 15:00"
+ },
+ {
+  "id": 2,
+  "titulo": "Inflação de outubro fica em 0,3%",
+  "resumo": "Índice oficial.",
+  "link": "https://exemplo.invalid/3",
+  "fonte": "Agência Exemplo",
+  "data": "06/11 10:00"
+ }
+]

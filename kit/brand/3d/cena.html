@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Sem Pauta 3D</title>
+<style>html,body{margin:0;background:#0E0D10;overflow:hidden}canvas{display:block}</style>
+<script type="importmap">
+{ "imports": {
+  "three": "./node_modules/three/build/three.module.js",
+  "three/addons/": "./node_modules/three/examples/jsm/",
+  "postprocessing": "./node_modules/postprocessing/build/index.js"
+} }
+</script>
+</head>
+<body>
+<script type="module">
+/*
+  Sem Pauta v3 — cena 3D da marca: "a folha pautada cortada".
+  Modos (?mode=...): sting (vinheta 1080x1920, 54 frames), banner (2560x1440),
+  plate_papers / plate_desk / plate_city (placas demonstrativas 1350x2400).
+  Determinística: tudo é função do número do frame (window.renderFrame(n)).
+*/
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer, RenderPass, EffectPass, BloomEffect, VignetteEffect, NoiseEffect, BlendFunction } from 'postprocessing';
+
+const P = new URLSearchParams(location.search);
+const MODE = P.get('mode') || 'sting';
+const SIZES = { sting: [1080, 1920], sting_h: [1920, 1080], plate_h1: [2400, 1350], plate_h2: [2400, 1350], banner: [2560, 1440], plate_papers: [1350, 2400], plate_desk: [1350, 2400], plate_city: [1350, 2400] };
+const [W, H] = SIZES[MODE];
+const FPS = 30, STING_FRAMES = 54;
+const STING = MODE.startsWith('sting'), HORIZ = MODE === 'sting_h';
+
+const COL = { carvao: 0x0E0D10, grafite: 0x1F1E23, papel: 0xEEE7D7, corte: 0xFF3A1F, ambar: 0xFFC21A, nevoa: 0x8E8C96 };
+
+// PRNG determinístico
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const easeOut = u => 1 - Math.pow(1 - clamp(u), 3);
+const easeInOut = u => { u = clamp(u); return u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; };
+const easeIn = u => Math.pow(clamp(u), 3);
+
+// ------------------------------------------------------------------ renderer
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(1); renderer.setSize(W, H);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.82;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(COL.carvao);
+scene.fog = new THREE.Fog(COL.carvao, 14, 34);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.55;
+
+const camera = new THREE.PerspectiveCamera(MODE === 'banner' ? 32 : 38, W / H, 0.1, 100);
+
+const key = new THREE.DirectionalLight(0xfff1dd, 2.4);
+key.position.set(-5, 9, 7); key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048); key.shadow.camera.left = -10; key.shadow.camera.right = 10; key.shadow.camera.top = 10; key.shadow.camera.bottom = -10;
+key.shadow.bias = -0.0004; key.shadow.radius = 4;
+scene.add(key);
+const rim = new THREE.DirectionalLight(COL.corte, 1.6); rim.position.set(6, -2, -6); scene.add(rim);
+scene.add(new THREE.AmbientLight(0xffffff, 0.08));
+
+// ------------------------------------------------------------------ texturas de papel
+function paperTexture(seed = 1, ruled = true) {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 1365;
+  const g = c.getContext('2d'); const r = mulberry32(seed);
+  g.fillStyle = '#EEE7D7'; g.fillRect(0, 0, c.width, c.height);
+  const img = g.getImageData(0, 0, c.width, c.height);
+  for (let i = 0; i < img.data.length; i += 4) { const n = (r() - .5) * 14; img.data[i] += n; img.data[i + 1] += n; img.data[i + 2] += n; }
+  g.putImageData(img, 0, 0);
+  if (ruled) { g.fillStyle = 'rgba(142,140,150,0.0)'; }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+}
+const paperMat = (seed) => new THREE.MeshStandardMaterial({ map: paperTexture(seed), color: 0xd8d2c6, roughness: 0.92, metalness: 0, side: THREE.DoubleSide });
+const lineMat = new THREE.MeshStandardMaterial({ color: 0x3A3942, roughness: 0.6 });
+const redMat = new THREE.MeshStandardMaterial({ color: COL.corte, emissive: COL.corte, emissiveIntensity: 2.4, roughness: 0.35 });
+
+// Folha pautada: papel + N linhas (meshes separados, podem se soltar)
+const SHEET_W = 6, SHEET_H = 8;
+function makeSheet(seed, nLines = 11) {
+  const grp = new THREE.Group();
+  const paper = new THREE.Mesh(new THREE.BoxGeometry(SHEET_W, SHEET_H, 0.03), paperMat(seed));
+  paper.castShadow = paper.receiveShadow = true; grp.add(paper);
+  const lines = [];
+  for (let i = 0; i < nLines; i++) {
+    const y = SHEET_H / 2 - 1.3 - i * ((SHEET_H - 2.0) / (nLines - 1));
+    // cada linha em 2 metades: a que fica (esquerda/cima do corte) e a que cai
+    const m = new THREE.Mesh(new THREE.BoxGeometry(SHEET_W - 1.0, 0.055, 0.02), lineMat);
+    m.position.set(0, y, 0.03); m.castShadow = true; grp.add(m); lines.push(m);
+  }
+  grp.userData = { paper, lines };
+  return grp;
+}
+
+// ------------------------------------------------------------------ pós-processamento
+const composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType });
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new BloomEffect({ intensity: 1.25, luminanceThreshold: 0.92, luminanceSmoothing: 0.2, mipmapBlur: true, radius: 0.7 });
+const vig = new VignetteEffect({ offset: 0.32, darkness: 0.62 });
+const grain = new NoiseEffect({ blendFunction: BlendFunction.OVERLAY, premultiply: false }); grain.blendMode.opacity.value = 0.10;
+composer.addPass(new EffectPass(camera, bloom, vig, grain));
+
+// ------------------------------------------------------------------ construção por modo
+let update = () => {};
+
+if (STING || MODE === 'banner' || MODE === 'plate_papers' || MODE === 'plate_h1') {
+  const rnd = mulberry32(7);
+  // pilha de folhas ao fundo
+  const stack = [];
+  const nStack = STING ? 5 : 9;
+  for (let i = 0; i < nStack; i++) {
+    const s = makeSheet(11 + i);
+    s.position.set((rnd() - .5) * 9, (rnd() - .5) * 10, -3 - rnd() * 9);
+    s.rotation.set((rnd() - .5) * .6, (rnd() - .5) * .8, (rnd() - .5) * 1.2);
+    if (MODE === 'banner') { s.position.x = 4 + rnd() * 9; s.position.z -= 3; }
+    s.userData.base = { p: s.position.clone(), r: s.rotation.clone(), spin: (rnd() - .5) * .25 };
+    scene.add(s); stack.push(s);
+  }
+  // folha herói
+  const hero = makeSheet(3);
+  scene.add(hero);
+  const lines = hero.userData.lines;
+  // corte: lâmina vermelha diagonal (plano fino) atravessando a folha
+  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.34, 16, 0.12), redMat);
+  blade.rotation.z = THREE.MathUtils.degToRad(-14);
+  blade.castShadow = true; hero.add(blade);
+  // fragmentos de papel (instanced) que voam do corte
+  const NFR = 140; const frGeo = new THREE.PlaneGeometry(0.16, 0.1);
+  const frags = new THREE.InstancedMesh(frGeo, new THREE.MeshStandardMaterial({ color: COL.papel, roughness: .9, side: THREE.DoubleSide }), NFR);
+  frags.castShadow = true; scene.add(frags);
+  const frData = []; const r2 = mulberry32(42);
+  for (let i = 0; i < NFR; i++) {
+    const v = r2();
+    frData.push({ y0: (v - .5) * SHEET_H * 1.05, vx: 1.2 + r2() * 3.5, vy: (r2() - .3) * 2.5, vz: 1 + r2() * 3, rs: new THREE.Vector3(r2() * 9, r2() * 9, r2() * 9), delay: r2() * 0.12, s: .5 + r2() * 1.2 });
+  }
+  frags.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  const dummy = new THREE.Object3D();
+
+  // a linha do corte no plano da folha: x = y * tan(14°) (aprox)
+  const k = Math.tan(THREE.MathUtils.degToRad(14));
+  const lineBase = lines.map(l => ({ y: l.position.y, rs: new THREE.Vector3() }));
+  const r3 = mulberry32(99); lineBase.forEach(b => b.rs.set((r3() - .5) * 3, (r3() - .5) * 4, (r3() - .5) * 6));
+
+  update = (f) => {
+    const t = f / FPS;
+    const sting = STING;
+    // tempos (s): entrada 0–.45, corte .40–.62, queda .55–1.8
+    const T_IN = sting ? easeOut(t / .5) : 1;
+    const CUT = sting ? easeInOut((t - .38) / .24) : 1;
+    const FALL = sting ? clamp((t - .55) / 1.25) : (MODE === 'plate_papers' ? .35 : .55);
+
+    // câmera
+    if (MODE === 'banner') { camera.position.set(-1.5, 0.4, 17); camera.lookAt(-1.5, 0, 0); hero.position.set(4.6, 0, 0); }
+    else if (MODE === 'plate_h1') { camera.position.set(3.0, -1.5, 12.5); camera.lookAt(1.2, 0.2, 0); hero.position.set(0, 0, 0); }
+    else if (HORIZ) { const z = 17.5 - 2.0 * easeOut(t / 1.8); camera.position.set(1.2 - 0.6 * easeOut(t / 1.8), 0, z); camera.lookAt(2.2, 0, 0); hero.position.set(-1.8, 1.0 * (1 - T_IN), -2 * (1 - T_IN)); }
+    else if (MODE === 'plate_papers') { camera.position.set(2.4, -3.0, 13.5); camera.lookAt(0.3, 0.2, 0); hero.position.set(0, 0, 0); }
+    else {
+      const z = 24.5 - 2.5 * easeOut(t / 1.8);
+      camera.position.set(0.6 - 0.8 * easeOut(t / 1.8), -1.2, z); camera.lookAt(0, -1.6, 0);
+      hero.position.set(0, 2.2 + 1.0 * (1 - T_IN), -2 * (1 - T_IN));
+    }
+    hero.rotation.set(-0.12 + 0.5 * (1 - T_IN), 0.22 - 0.6 * (1 - T_IN), 0.05);
+
+    // lâmina atravessa de cima/direita para baixo/esquerda
+    const sB = THREE.MathUtils.lerp(17, 0, CUT), a14 = THREE.MathUtils.degToRad(14);
+    blade.position.set(Math.sin(a14) * sB, Math.cos(a14) * sB, 0.12);
+
+    // linhas: a metade à direita do corte cai e gira
+    lines.forEach((l, i) => {
+      const b = lineBase[i];
+      const fx = clamp(FALL * 1.15 - i * 0.035);
+      const g = easeIn(fx);
+      const cutX = b.y * k; // posição x do corte nessa altura
+      // encurta a linha para a esquerda do corte e deixa a "outra metade" cair (simula com escala+deslocamento)
+      const leftW = (cutX + (SHEET_W - 1) / 2);
+      const full = SHEET_W - 1;
+      const cutDone = CUT >= 1 - 1e-3 || !STING;
+      const w = cutDone ? THREE.MathUtils.lerp(full, Math.max(leftW, .05), Math.min(1, fx * 6)) : full;
+      l.scale.x = w / full; l.position.x = -full / 2 + w / 2;
+      l.position.y = b.y - 0 * g; l.position.z = 0.03;
+    });
+    // metades caindo: reaproveita objetos extras
+    if (!hero.userData.fallers) {
+      hero.userData.fallers = lines.map((l, i) => { const m = l.clone(); m.material = lineMat; hero.add(m); return m; });
+    }
+    hero.userData.fallers.forEach((m, i) => {
+      const b = lineBase[i]; const full = SHEET_W - 1; const cutX = b.y * k;
+      const rightW = Math.max(full / 2 - cutX, .05);
+      const fx = clamp(FALL * 1.15 - i * 0.035); const g = easeIn(fx);
+      const visible = (!STING) || CUT >= 0.999;
+      m.visible = visible && rightW > .06;
+      m.scale.x = rightW / full;
+      m.position.set(cutX + rightW / 2 + g * (1.5 + i * .12), b.y - g * (9 + i * .4), 0.03 + g * (2.5 + b.rs.z * .4));
+      m.rotation.set(b.rs.x * g, b.rs.y * g, (b.rs.z * .5 - .6) * g);
+    });
+
+    // fragmentos
+    const tf = sting ? t - .55 : (MODE === 'banner' ? .55 : .45);
+    frData.forEach((d, i) => {
+      const tt = Math.max(0, tf - d.delay);
+      const on = sting ? (CUT > .98 ? 1 : 0) : 1;
+      const x = d.y0 * k + d.vx * tt; const y = d.y0 + d.vy * tt - 4.5 * tt * tt; const z = .1 + d.vz * tt;
+      dummy.position.set(x, y, z).applyEuler(hero.rotation).add(hero.position);
+      dummy.rotation.set(d.rs.x * tt, d.rs.y * tt, d.rs.z * tt);
+      const s = on * d.s * (tt > 0 ? 1 : 0) * (1 - clamp((tt - 1.1) / .4));
+      dummy.scale.set(s, s, s); dummy.updateMatrix(); frags.setMatrixAt(i, dummy.matrix);
+    });
+    frags.instanceMatrix.needsUpdate = true;
+
+    // pilha ao fundo deriva devagar
+    stack.forEach((s, i) => { const b = s.userData.base; s.rotation.z = b.r.z + b.spin * t; s.position.y = b.p.y + .15 * Math.sin(t * 1.3 + i); });
+    bloom.intensity = 1.0 + 1.4 * (sting ? Math.exp(-Math.pow((t - .62) / .12, 2)) : 0);
+  };
+}
+
+if (MODE === 'plate_desk' || MODE === 'plate_h2') {
+  // mesa com documentos espalhados e luminária: placa demonstrativa de "bastidores"
+  scene.fog = new THREE.Fog(COL.carvao, 8, 22);
+  const desk = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshStandardMaterial({ color: 0x2a2320, roughness: .55, metalness: .05 }));
+  desk.rotation.x = -Math.PI / 2; desk.receiveShadow = true; scene.add(desk);
+  const r = mulberry32(5);
+  for (let i = 0; i < 9; i++) {
+    const s = makeSheet(30 + i, 9); s.scale.setScalar(.55);
+    s.rotation.set(-Math.PI / 2, 0, (r() - .5) * 1.6);
+    s.position.set((r() - .5) * 6, 0.02 + i * 0.012, (r() - .5) * 7 - 1); scene.add(s);
+  }
+  // marcações vermelhas sobre um documento (riscos)
+  for (let i = 0; i < 3; i++) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(2.2 - i * .5, .02, .09), redMat);
+    m.position.set(-.4 + i * .1, .2, 1.2 + i * .35); m.rotation.y = .12; scene.add(m);
+  }
+  const spot = new THREE.SpotLight(0xffe2b8, 120, 30, .55, .6, 1.6); spot.position.set(-3, 9, 2); spot.target.position.set(0, 0, 0);
+  spot.castShadow = true; spot.shadow.mapSize.set(2048, 2048); scene.add(spot, spot.target);
+  key.intensity = .5;
+  update = () => { if (MODE === 'plate_h2') { camera.position.set(0.5, 7.5, 7.5); camera.lookAt(0, 0, 0); } else { camera.position.set(1.5, 9.5, 7.5); camera.lookAt(0, 0, .2); } };
+}
+
+if (MODE === 'plate_city') {
+  // silhueta modernista estilizada ao entardecer (não é retrato fiel de nenhum edifício)
+  scene.background = null;
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(60, 32, 16), new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false, fog: false,
+    uniforms: { top: { value: new THREE.Color(0x15131c) }, mid: { value: new THREE.Color(0x5a2a2a) }, low: { value: new THREE.Color(0xff6a3a) } },
+    vertexShader: 'varying vec3 vP; void main(){ vP = normalize(position); gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }',
+    fragmentShader: 'uniform vec3 top; uniform vec3 mid; uniform vec3 low; varying vec3 vP; void main(){ float h = vP.y; vec3 c = mix(low, mid, smoothstep(-0.02, 0.12, h)); c = mix(c, top, smoothstep(0.12, 0.45, h)); gl_FragColor = vec4(c,1.); }'
+  }));
+  scene.add(sky); scene.fog = new THREE.Fog(0x3a1e22, 18, 60);
+  const dark = new THREE.MeshStandardMaterial({ color: 0x18161c, roughness: .7, metalness: .2 });
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x141217, roughness: .25, metalness: .4 }));
+  ground.rotation.x = -Math.PI / 2; scene.add(ground);
+  const slab = new THREE.Mesh(new THREE.BoxGeometry(16, .9, 5), dark); slab.position.set(0, .45, 0); scene.add(slab);
+  const tw1 = new THREE.Mesh(new THREE.BoxGeometry(1.6, 13, 3.2), dark); tw1.position.set(-.95, 6.5, -2.4); scene.add(tw1);
+  const tw2 = tw1.clone(); tw2.position.x = .95; scene.add(tw2);
+  const bowl = new THREE.Mesh(new THREE.SphereGeometry(2.6, 48, 24, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), dark); bowl.scale.y = .55; bowl.position.set(-4.2, 2.3, .5); bowl.rotation.x = Math.PI; scene.add(bowl);
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(2.1, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), dark); dome.scale.y = .62; dome.position.set(4.2, .9, .5); scene.add(dome);
+  for (let i = 0; i < 40; i++) { const w = new THREE.Mesh(new THREE.BoxGeometry(1.62, .06, .02), new THREE.MeshBasicMaterial({ color: (i * 7) % 5 === 0 ? 0xffc27a : 0x2a2630 })); w.position.set(i % 2 ? .95 : -.95, 1.4 + Math.floor(i / 2) * .55, -.79); scene.add(w); }
+  key.position.set(-6, 2, -12); key.color.set(0xff8a5a); key.intensity = 2;
+  update = () => { camera.fov = 34; camera.updateProjectionMatrix(); camera.position.set(-3.5, 1.6, 19); camera.lookAt(0, 5.2, 0); };
+}
+
+// ------------------------------------------------------------------ API para captura
+window.FRAMES = STING ? STING_FRAMES : 1;
+window.renderFrame = (n) => { update(n); composer.render(1 / FPS); return true; };
+window.snapshot = () => renderer.domElement.toDataURL('image/png');
+window.ready = true;
+</script>
+</body>
+</html>
