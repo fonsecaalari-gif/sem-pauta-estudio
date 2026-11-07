@@ -63,16 +63,38 @@ class Producao:
             self.log(f"  {len(self._manchetes[horas])} manchetes coletadas ({horas} h)")
         return self._manchetes[horas]
 
-    def textos_de_fonte(self, ids, horas=36, extra=""):
+    def pesquisar(self, tema, ids=(), horas=36, consultas=None):
+        """Junta as matérias da pauta (feeds) e os resultados da busca na web, baixa o texto completo de cada uma.
+
+        Devolve (fontes, texto). Menos de 2 fontes com texto = tema sem base suficiente.
+        """
+        if self.falso:
+            ms = {m["id"]: m for m in self.manchetes(horas)}
+            fontes = [{"n": k, "url": ms[i]["link"], "veiculo": ms[i]["fonte"], "titulo": ms[i]["titulo"], "texto": ms[i]["resumo"]}
+                      for k, i in enumerate(ids, 1) if i in ms] or [{"n": 1, "url": "https://exemplo.invalid/1", "veiculo": "Teste", "titulo": tema, "texto": tema}]
+            return fontes, "\n\n".join(f"[{f['n']}] {f['veiculo']} — {f['titulo']}\nURL: {f['url']}\n{f['texto']}" for f in fontes)
         ms = {m["id"]: m for m in self.manchetes(horas)}
-        partes = []
-        for k, i in enumerate(ids, 1):
-            m = ms.get(i)
-            if not m: continue
-            corpo = "" if self.falso else F.texto_da_materia(m["link"])
-            partes.append(f"[{k}] {m['fonte']} — {m['titulo']} ({m['data']})\nURL: {m['link']}\n{corpo or m['resumo']}")
-        if extra: partes.append("[busca na web]\n" + extra)
-        return "\n\n".join(partes) or "(sem textos)"
+        cand = [{"url": ms[i]["link"], "titulo": ms[i]["titulo"], "fonte": ms[i]["fonte"]} for i in ids if i in ms]
+        for q in (consultas or [f"{tema} notícia"]):
+            cand += buscar_na_web(q, self.modelo)
+        fontes, texto = F.montar_fontes(cand, max_fontes=6 if horas <= 72 else 8)
+        self.log(f"  {len(fontes)} fonte(s) com texto completo: " + ", ".join(F.dominio(f["url"]) for f in fontes))
+        return fontes, texto
+
+    def roteirizar(self, usuario, validador, rotulo, fontes_texto, max_tokens=8000):
+        """Roteiro + checagem de fatos. Devolve (spec, erros_de_formato, afirmacoes_sem_fonte)."""
+        spec, erros = R.pedir(usuario, validador, self.modelo, rotulo, max_tokens=max_tokens, log=self.log)
+        if self.falso: return spec, erros, []
+        for rodada in range(2):
+            problemas = R.verificar(spec, fontes_texto, self.modelo)
+            self.log(f"  checagem {rodada + 1}: {len(problemas)} afirmação(ões) sem fonte")
+            if not problemas: return spec, erros, []
+            spec, erros = R.corrigir(spec, problemas, usuario, validador, self.modelo, rotulo, max_tokens)
+        return spec, erros, R.verificar(spec, fontes_texto, self.modelo)
+
+    def salvar_fontes(self, nome, fontes):
+        p = self.saida / f"{nome}_FONTES.md"
+        p.write_text("\n\n".join(f"## [{f['n']}] {f['veiculo']} — {f['titulo']}\n{f['url']}\n\n{f['texto']}" for f in fontes), encoding="utf-8")
 
     # ------------------------------------------------------------ fotos
     def fotos(self, spec, prefixo, avisos):
@@ -107,6 +129,18 @@ class Producao:
                 if p: th["image"] = str(p.relative_to(KIT))
             th.setdefault("image", primeira[0] if primeira else None)
         return primeira is not None
+
+    def bloquear(self, spec, sem_fonte, fontes, formato, tema, avisos):
+        """Guarda as fontes; se sobrou afirmação sem fonte, não renderiza e explica no relatório."""
+        spec["_fontes"] = fontes
+        if not sem_fonte: return False
+        avisos.append(f"BLOQUEADO: {len(sem_fonte)} afirmação(ões) sem fonte depois de 2 correções — não renderizado:")
+        avisos += [f"  bloco {p.get('bloco')}: \"{str(p.get('trecho', ''))[:160]}\" — {str(p.get('motivo', ''))[:160]}" for p in sem_fonte[:12]]
+        slug = f"{self.dia.isoformat()}_bloqueado_{slugify(spec.get('slug') or tema)}"
+        (self.saida / f"{slug}.json").write_text(json.dumps({k: v for k, v in spec.items() if not k.startswith("_")}, ensure_ascii=False, indent=2), encoding="utf-8")
+        self.salvar_fontes(slug, fontes)
+        self.videos.append({"slug": slug, "formato": formato, "spec": spec, "mp4": None, "avisos": avisos, "tema": tema})
+        return True
 
     def documento(self, s, prefixo, i, avisos):
         url = s.pop("url_documento", ""); s.pop("busca_imagem", None)
@@ -146,6 +180,7 @@ class Producao:
         limpo = {k: v for k, v in spec.items() if not k.startswith("_")}
         spec_path.write_text(json.dumps(limpo, ensure_ascii=False, indent=2), encoding="utf-8")
         shutil.copy(spec_path, self.saida / spec_path.name)
+        if spec.get("_fontes"): self.salvar_fontes(slug, spec["_fontes"])
         mp4 = None
         try:
             mp4 = self.renderizar(spec_path, script, self.saida / f"{slug}.mp4")
@@ -169,14 +204,17 @@ class Producao:
         for k, t in enumerate(temas, 1):
             t["tema"] = t.get("tema", "").replace("*", "")
             self.log(f"Short {k}/{len(temas)}: {t['tema']}")
-            extra = buscar_na_web(f"Notícias de hoje sobre: {t['tema']}. Liste fatos com fonte e link.", self.modelo) if CFG["busca_web_mistral"] else ""
-            usuario = R.prompt("short", tema=t["tema"], angulo=t.get("angulo", ""), hoje=f"{self.dia:%d/%m/%Y}",
-                               fontes=self.textos_de_fonte(t.get("ids", []), extra=extra))
+            fontes, ftexto = self.pesquisar(t["tema"], t.get("ids", []))
+            if len(fontes) < 2 and not self.falso:
+                self.avisos_gerais.append(f"Short '{t['tema']}': só {len(fontes)} fonte(s) com texto completo — tema descartado (regra: ≥ 2 fontes)."); continue
+            urls = {f["url"] for f in fontes}
+            usuario = R.prompt("short", tema=t["tema"], angulo=t.get("angulo", ""), hoje=f"{self.dia:%d/%m/%Y}", fontes=ftexto)
             try:
-                spec, erros = R.pedir(usuario, R.validar_short, self.modelo, "short", log=self.log)
+                spec, erros, sem_fonte = self.roteirizar(usuario, lambda x: R.validar_short(x, urls_validas=urls), "short", ftexto)
             except ErroLLM as e:
                 self.avisos_gerais.append(f"Short '{t['tema']}': {e}"); continue
             avisos = [f"validação: {x}" for x in erros]
+            if self.bloquear(spec, sem_fonte, fontes, "short", t["tema"], avisos): continue
             spec["_n"] = k
             if not self.fotos(spec, f"s{k}", avisos):
                 avisos.append("NENHUMA foto licenciada encontrada — vídeo não renderizado (regra do canal)")
@@ -208,14 +246,24 @@ class Producao:
             vid = esc.get("votacao_id")
             if vid and votacoes: extra_prompt = self.injetar_placar(molde, vid)
         self.log(f"  tema: {tema}")
-        busca = buscar_na_web(f"Contexto, dados oficiais e fontes sobre: {tema}", self.modelo) if CFG["busca_web_mistral"] else ""
+        if not extra_prompt:   # sem placar oficial: o bloco placar vira um fato comum
+            for b in molde["scenes"]:
+                if b.get("type") == "placar":
+                    b.clear(); b.update({"type": "fato", "busca_imagem": "TODO", "ficha": "FATO · FONTE: TODO", "headline": "TODO", "narration": "TODO ~70 palavras: mais um fato do caso, com fonte"})
+        consultas = [f"{tema} notícia", f"{tema} histórico cronologia" if quadro.startswith("6_") else f"{tema} dados oficiais",
+                     f"{tema} o que diz o governo e a oposição"]
+        fontes, ftexto = self.pesquisar(tema, ids, horas, consultas)
+        if len(fontes) < 3 and not self.falso:
+            self.avisos_gerais.append(f"Longo '{tema}': só {len(fontes)} fonte(s) com texto completo — não gerado (mínimo 3)."); return
+        urls = {f["url"] for f in fontes}
         usuario = R.prompt("longo", quadro=QUADROS[quadro], tema=tema, hoje=f"{self.dia:%d/%m/%Y}", extra=extra_prompt,
-                           molde=json.dumps(molde, ensure_ascii=False, indent=1), fontes=self.textos_de_fonte(ids, horas, busca))
+                           molde=json.dumps(molde, ensure_ascii=False, indent=1), fontes=ftexto)
         try:
-            spec, erros = R.pedir(usuario, R.validar_longo, self.modelo, "longo", max_tokens=16000, log=self.log)
+            spec, erros, sem_fonte = self.roteirizar(usuario, lambda x: R.validar_longo(x, urls_validas=urls), "longo", ftexto, 16000)
         except ErroLLM as e:
             self.avisos_gerais.append(f"Longo: {e}"); return
         avisos = [f"validação: {x}" for x in erros] + ["confira todos os números (dado, gráfico, placar) na fonte antes de postar"]
+        if self.bloquear(spec, sem_fonte, fontes, "longo", tema, avisos): return
         spec["_n"] = 10
         self.fotos(spec, "l", avisos); self.completar_descricao(spec)
         spec.update({"music": CFG["trilha"], "quadro": molde.get("quadro"), "legendas_na_tela": False})
@@ -238,17 +286,18 @@ class Producao:
             temas = [l[2:].strip() for l in (KIT / "templates" / "temas_tutorial.md").read_text(encoding="utf-8").splitlines() if l.startswith("- ")]
             tema = next((t for t in temas if t[:40] not in usados), temas[0])
         self.log(f"Tutorial de domingo: {tema}")
-        busca = buscar_na_web(f"Passo a passo oficial e atualizado (site do governo ou do órgão): {tema}. Inclua os endereços das páginas.", self.modelo)
-        if not busca and not self.falso:
-            self.avisos_gerais.append("Tutorial: sem textos de fonte (ative 'busca_web_mistral' ou rode com --tema e revise). Não gerado.")
-            return
+        fontes, ftexto = self.pesquisar(tema, (), 72, [f"{tema} passo a passo site oficial gov.br", f"{tema} como fazer"])
+        if len(fontes) < 2 and not self.falso:
+            self.avisos_gerais.append(f"Tutorial '{tema}': só {len(fontes)} fonte(s) com texto — não gerado."); return
+        urls = {f["url"] for f in fontes}
         molde = json.loads((KIT / "longos" / "modelos" / "8_domingo_tutorial.json").read_text(encoding="utf-8"))
-        usuario = R.prompt("tutorial", tema=tema, molde=json.dumps(molde, ensure_ascii=False, indent=1), fontes=busca or "(teste)")
+        usuario = R.prompt("tutorial", tema=tema, molde=json.dumps(molde, ensure_ascii=False, indent=1), fontes=ftexto)
         try:
-            spec, erros = R.pedir(usuario, R.validar_longo, self.modelo, "tutorial", max_tokens=16000, log=self.log)
+            spec, erros, sem_fonte = self.roteirizar(usuario, lambda x: R.validar_longo(x, urls_validas=urls), "tutorial", ftexto, 16000)
         except ErroLLM as e:
             self.avisos_gerais.append(f"Tutorial: {e}"); return
         avisos = [f"validação: {x}" for x in erros]
+        if self.bloquear(spec, sem_fonte, fontes, "tutorial", tema, avisos): return
         pend = 0
         for i, s in enumerate(spec["scenes"]):
             if s.get("type") != "passo": continue
@@ -324,6 +373,7 @@ class Producao:
                   "**Hashtags**", "```", " ".join(s.get("hashtags", [])), "```"]
             fts = [f"{f.get('veiculo', '')} {f.get('url', '')}".strip() for f in s.get("fontes", []) if isinstance(f, dict)]
             if fts: L += ["**Fontes**"] + [f"- {f}" for f in fts]
+            if (self.saida / f"{v['slug']}_FONTES.md").exists(): L.append(f"Textos completos das fontes usadas: `{v['slug']}_FONTES.md`")
             if v["avisos"]: L += ["", "**Conferir antes de postar**"] + [f"- {a}" for a in v["avisos"]]
         L += ["", "---", "Lembretes: confira os números nas fontes; suba o .srt dos longos; configure a tela final; "
               "no vídeo de produto marque 'Inclui promoção paga'."]

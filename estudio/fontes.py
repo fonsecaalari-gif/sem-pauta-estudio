@@ -89,3 +89,53 @@ def votacoes_plenario(dias=7):
         if v.get("siglaOrgao") == "PLEN" and v.get("descricao"):
             out.append({"id": v["id"], "data": (v.get("dataHoraRegistro") or "")[:10], "descricao": v["descricao"][:240]})
     return out[:40]
+
+
+# ------------------------------------------------------------------ pesquisa com fontes completas
+PREFERIDOS = ("agenciabrasil.ebc.com.br", ".gov.br", ".leg.br", ".jus.br", ".mp.br", "ibge.gov.br", "g1.globo.com",
+              "oglobo.globo.com", "valor.globo.com", "folha.uol.com.br", "uol.com.br", "estadao.com.br", "cnnbrasil.com.br",
+              "bbc.com", "poder360.com.br", "cartacapital.com.br", "brasildefato.com.br", "revistaforum.com.br",
+              "metropoles.com", "apublica.org", "intercept.com.br", "jota.info", "conjur.com.br", "nexojornal.com.br",
+              "correiobraziliense.com.br", "terra.com.br", "dw.com", "elpais.com", "infomoney.com.br", "exame.com",
+              "veja.abril.com.br", "istoe.com.br", "otempo.com.br", "gazetadopovo.com.br", "jornaldebrasilia.com.br")
+BLOQUEADOS = ("bet", "aposta", "livescore", "casino", "cassino")           # palavras no domínio
+REDES = ("youtube.com", "tiktok.com", "instagram.com", "facebook.com", "x.com", "twitter.com", "wikipedia.org",
+         "news.google.com", "msn.com", "kwai.com", "threads.net")       # não são fonte jornalística
+
+
+def dominio(url):
+    try: return url.split("/")[2].lower().removeprefix("www.")
+    except IndexError: return ""
+
+
+def confiavel(url):
+    d = dominio(url)
+    return any(d == p.lstrip(".") or d.endswith(p if p.startswith(".") else "." + p) or d == p for p in PREFERIDOS)
+
+
+def bloqueado(url):
+    d = dominio(url)
+    return any(b in d for b in BLOQUEADOS) or any(d == r or d.endswith("." + r) for r in REDES)
+
+
+def montar_fontes(candidatos, max_fontes=6, min_texto=700):
+    """candidatos: [{url, titulo, descricao/resumo, trechos?, fonte?}]. Baixa o texto completo, prioriza veículos confiáveis.
+
+    Devolve (lista_de_fontes, texto_para_a_mistral). Cada fonte: {n, url, veiculo, titulo, texto}.
+    """
+    vistos, ordem = set(), []
+    for c in candidatos:
+        u = c.get("url") or c.get("link")
+        if not u or u in vistos or bloqueado(u): continue
+        vistos.add(u); ordem.append(c)
+    ordem.sort(key=lambda c: 0 if confiavel(c.get("url") or c.get("link")) else 1)
+    fontes = []
+    for c in ordem:
+        if len(fontes) >= max_fontes: break
+        u = c.get("url") or c.get("link")
+        texto = texto_da_materia(u)
+        if len(texto) < min_texto: continue
+        fontes.append({"n": len(fontes) + 1, "url": u, "veiculo": c.get("fonte") or dominio(u),
+                       "titulo": c.get("titulo", ""), "texto": texto})
+    bloco = "\n\n".join(f"[{f['n']}] {f['veiculo']} — {f['titulo']}\nURL: {f['url']}\n{f['texto']}" for f in fontes)
+    return fontes, bloco

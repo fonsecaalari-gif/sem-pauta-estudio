@@ -29,8 +29,20 @@ def _todo(obj):
 
 
 # ------------------------------------------------------------------ validações
-def validar_short(spec, produto=False):
+def _comuns(spec, urls_validas):
     e = []
+    for i, s in enumerate(spec.get("scenes", []), 1):
+        if re.search(r"~\s*\d+\s*(p\b|pal)", s.get("narration", "")): e.append(f"bloco {i}: sobrou a marcação '~N palavras' na narração; apague")
+    if urls_validas is not None:
+        citadas = [f.get("url", "") for f in spec.get("fontes", []) if isinstance(f, dict)]
+        if not citadas: e.append("a lista 'fontes' está vazia: liste as fontes usadas, com os URLs exatos dos TEXTOS DE FONTE")
+        fora = [u for u in citadas if u not in urls_validas]
+        if fora: e.append("estes URLs em 'fontes' não estão nos TEXTOS DE FONTE (use só os URLs fornecidos): " + ", ".join(fora[:4]))
+    return e
+
+
+def validar_short(spec, produto=False, urls_validas=None):
+    e = _comuns(spec, urls_validas)
     sc = spec.get("scenes") or []
     if not 4 <= len(sc) <= 7: e.append(f"o Short precisa de 4 a 7 cenas (veio {len(sc)})")
     for i, s in enumerate(sc, 1):
@@ -61,8 +73,8 @@ def validar_short(spec, produto=False):
     return e
 
 
-def validar_longo(spec, minimo=1250):
-    e = []
+def validar_longo(spec, minimo=1250, urls_validas=None):
+    e = _comuns(spec, urls_validas)
     sc = spec.get("scenes") or []
     for i, s in enumerate(sc, 1):
         t = s.get("type")
@@ -75,6 +87,7 @@ def validar_longo(spec, minimo=1250):
             elif not all(isinstance(v, (int, float)) for v in g["valores"]): e.append(f"bloco {i} (grafico): valores precisam ser números")
         if t == "dado" and not isinstance(s.get("value"), (int, float)): e.append(f"bloco {i} (dado): value precisa ser número")
         if t == "checagem" and not s.get("veredito"): e.append(f"bloco {i} (checagem): falta veredito")
+        if t == "placar" and not isinstance(s.get("sim"), int): e.append(f"bloco {i} (placar): só use placar com os números oficiais já preenchidos; sem eles, troque por 'fato'")
         if t == "linha_do_tempo" and len(s.get("eventos", [])) < 3: e.append(f"bloco {i}: linha do tempo com menos de 3 eventos")
     if sum(1 for s in sc if s.get("type") == "capitulo") < 3: e.append("precisa de pelo menos 3 capítulos")
     n = palavras(spec)
@@ -105,3 +118,28 @@ def escolher_pauta(manchetes, historico, n, modelo):
     usuario = prompt("pauta", n=n, historico=historico or "(vazio)", manchetes=linhas)
     js = llm.conversar_json(sistema(), usuario, modelo, temperatura=0.3, max_tokens=2000, rotulo="pauta")
     return js.get("temas", [])[:n]
+
+
+def roteiro_numerado(spec):
+    linhas = []
+    for i, s in enumerate(spec.get("scenes", []), 1):
+        campos = {k: v for k, v in s.items() if k in ("type", "headline", "titulo", "narration", "label", "value", "prefix", "suffix",
+                  "ficha", "grafico", "eventos", "afirmacao", "explicacao", "veredito", "pontos", "itens", "sim", "nao", "abst")}
+        linhas.append(f"[{i}] " + json.dumps(campos, ensure_ascii=False))
+    return "\n".join(linhas)
+
+
+def verificar(spec, fontes_texto, modelo):
+    """Checagem: devolve a lista de afirmações sem fonte [{bloco, trecho, motivo}]."""
+    usuario = prompt("verificar", roteiro=roteiro_numerado(spec), fontes=fontes_texto)
+    js = llm.conversar_json(sistema(), usuario, modelo, temperatura=0.0, max_tokens=4000, rotulo="verificar")
+    return [x for x in js.get("sem_fonte", []) if isinstance(x, dict)]
+
+
+def corrigir(spec, problemas, usuario_original, validador, modelo, rotulo, max_tokens=8000):
+    """Devolve o roteiro para a Mistral reescrever/remover as afirmações sem fonte."""
+    lista = "\n".join(f"- bloco {p.get('bloco')}: \"{p.get('trecho', '')}\" — {p.get('motivo', '')}" for p in problemas)
+    msg = (usuario_original + "\n\nO CHECADOR encontrou afirmações SEM FONTE no seu roteiro. Reescreva ou remova cada uma, usando só o que"
+           " está nos TEXTOS DE FONTE (se precisar, troque o número/nome pelo que a fonte diz, ou tire a frase). Mantenha o resto."
+           " Devolva o JSON completo.\n" + lista + "\n\nROTEIRO ATUAL:\n" + json.dumps(spec, ensure_ascii=False)[:30000])
+    return pedir(msg, validador, modelo, rotulo, max_tokens=max_tokens, tentativas=2)

@@ -64,25 +64,34 @@ def conversar_json(sistema, usuario, modelo, temperatura=0.4, max_tokens=8000, r
         raise ErroLLM(f"A Mistral não devolveu JSON válido ({e}). Início: {conteudo[:200]}") from None
 
 
-def buscar_na_web(pergunta, modelo):
-    """Busca na web com a ferramenta web_search da Mistral (API de Conversations). Opcional: se falhar, devolve ''."""
+def buscar_na_web(pergunta, modelo="mistral-large-latest"):
+    """Busca na web com a ferramenta web_search da Mistral (API de Conversations).
+
+    Devolve a lista de resultados da busca [{url, titulo, descricao, trechos}]. Lista vazia se falhar.
+    """
     if os.environ.get("ESTUDIO_LLM_FALSO") == "1":
-        return ""
+        return []
     try:
-        js = _post("/conversations", {"model": modelo, "inputs": pergunta, "tools": [{"type": "web_search"}],
-                                      "store": False}, tentativas=2)
+        js = _post("/conversations", {"model": modelo, "inputs": pergunta, "tools": [{"type": "web_search"}]}, tentativas=2)
     except ErroLLM as e:
         print(f"aviso: busca na web da Mistral indisponível ({e})")
-        return ""
-    partes = []
+        return []
+    achados, vistos = [], set()
     for saida in js.get("outputs", []):
-        cont = saida.get("content")
-        if isinstance(cont, str): partes.append(cont)
-        elif isinstance(cont, list):
-            for c in cont:
-                if c.get("type") == "text": partes.append(c.get("text", ""))
-                elif c.get("type") == "tool_reference": partes.append(f"[fonte: {c.get('title', '')} — {c.get('url', '')}]")
-    return "\n".join(partes)
+        info = saida.get("info") if saida.get("type") == "tool.execution" else None
+        res = info.get("result") if isinstance(info, dict) else None
+        if isinstance(res, str):
+            try: res = json.loads(res)
+            except json.JSONDecodeError: res = None
+        if not isinstance(res, dict): continue
+        for r in res.values():
+            url = (r or {}).get("url")
+            if not url or url in vistos: continue
+            vistos.add(url)
+            limpa = lambda t: re.sub(r"<[^>]+>", "", t or "")
+            achados.append({"url": url, "titulo": limpa(r.get("title")), "descricao": limpa(r.get("description")),
+                            "trechos": [limpa(x) for x in r.get("snippets", [])][:4]})
+    return achados
 
 
 def _resposta_falsa(rotulo):
