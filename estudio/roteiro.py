@@ -29,9 +29,26 @@ def _todo(obj):
 
 
 # ------------------------------------------------------------------ validações
-def _comuns(spec, urls_validas):
+def _datas_fora(texto, hoje, dias=60):
+    """Datas DD.MM.AAAA ou DD/MM/AAAA fora da janela [hoje-dias, hoje]."""
+    from datetime import date, timedelta
+    fora = []
+    for d, m, a in re.findall(r"\b(\d{1,2})[./](\d{1,2})[./](\d{4})\b", texto or ""):
+        try:
+            dt = date(int(a), int(m), int(d))
+        except ValueError:
+            fora.append(f"{d}.{m}.{a}"); continue
+        if not hoje - timedelta(days=dias) <= dt <= hoje: fora.append(f"{d}.{m}.{a}")
+    return fora
+
+
+def _comuns(spec, urls_validas, hoje=None):
+    from datetime import date
+    hoje = hoje or date.today()
     e = []
     for i, s in enumerate(spec.get("scenes", []), 1):
+        fora = _datas_fora(s.get("ficha", ""), hoje)
+        if fora: e.append(f"bloco {i}: a data da ficha ({', '.join(fora)}) não é recente — use a data do fato na fonte (hoje é {hoje:%d.%m.%Y})")
         if re.search(r"~\s*\d+\s*(p\b|pal)", s.get("narration", "")): e.append(f"bloco {i}: sobrou a marcação '~N palavras' na narração; apague")
     if urls_validas is not None:
         citadas = [f.get("url", "") for f in spec.get("fontes", []) if isinstance(f, dict)]

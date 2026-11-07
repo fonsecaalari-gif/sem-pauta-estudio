@@ -14,6 +14,15 @@ def _texto(meta, campo):
     return re.sub(r"<[^>]+>", "", (meta.get(campo) or {}).get("value", "")).strip()
 
 
+_VAZIAS = {"de", "da", "do", "das", "dos", "e", "em", "no", "na", "file", "jpg", "jpeg", "png", "foto", "the", "of"}
+
+
+def _palavras(texto):
+    import unicodedata
+    t = unicodedata.normalize("NFKD", texto or "").encode("ascii", "ignore").decode().lower()
+    return {w for w in re.findall(r"[a-z0-9]+", t) if len(w) > 2 and w not in _VAZIAS}
+
+
 def buscar_foto(termos, pasta, nome, licencas, largura=1920):
     """Procura no Commons e baixa a 1ª foto com licença aceita. Devolve (caminho_relativo, crédito) ou (None, motivo)."""
     q = {"action": "query", "format": "json", "generator": "search", "gsrnamespace": 6, "gsrlimit": 12,
@@ -25,8 +34,12 @@ def buscar_foto(termos, pasta, nome, licencas, largura=1920):
         return None, f"Commons indisponível ({e.__class__.__name__})"
     paginas = sorted(js.get("query", {}).get("pages", {}).values(), key=lambda p: p.get("index", 99))
     aceitas = [l.lower() for l in licencas]
+    chaves = _palavras(termos)
     for p in paginas:
         ii = (p.get("imageinfo") or [{}])[0]; meta = ii.get("extmetadata", {})
+        # a foto precisa ser do que foi pedido: palavras da busca no título/descrição do arquivo
+        rotulo = _palavras(" ".join([p.get("title", ""), _texto(meta, "ImageDescription"), _texto(meta, "ObjectName")]))
+        if chaves and len(chaves & rotulo) < max(1, (len(chaves) + 1) // 2): continue
         lic = _texto(meta, "LicenseShortName")
         if not lic or not any(lic.lower().startswith(a) for a in aceitas): continue
         if ii.get("width", 0) < 900: continue

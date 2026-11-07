@@ -17,6 +17,9 @@ REGRAS QUE NÃO SE NEGOCIAM
    "Narração gerada por voz sintética.", a pergunta do vídeo e "Siga o Sem Pauta: https://youtube.com/@somos.sempauta".
 9. Para cada cena com foto, escreva `busca_imagem`: 2 a 5 palavras para buscar a foto no Wikimedia Commons
    (nome completo da pessoa citada, ou o prédio/instituição/lugar). Ex.: "Palácio do Planalto", "Senado Federal plenário".
+   Use o NOME de uma pessoa só na cena em que ela é citada pelo nome; nas outras, busque o órgão, prédio ou lugar
+   (ex.: "Supremo Tribunal Federal fachada", "Procuradoria-Geral da República sede"). Mostrar alguém ao lado de um
+   assunto em que não aparece sugere envolvimento que não existe.
    Nunca peça ilustração, montagem ou foto de pessoa que não está na notícia.
 
 Responda SEMPRE com um único objeto JSON válido, sem texto fora dele.
