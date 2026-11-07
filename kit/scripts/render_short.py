@@ -44,7 +44,8 @@ def tts_edge(text, out, voice, rate="+5%"):
     import edge_tts
     words = []
     async def run():
-        com = edge_tts.Communicate(text, voice, rate=rate, boundary="WordBoundary")
+        proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy") or None   # redes com proxy obrigatório
+        com = edge_tts.Communicate(text, voice, rate=rate, boundary="WordBoundary", proxy=proxy)
         with open(out, "wb") as f:
             async for ch in com.stream():
                 if ch["type"] == "audio": f.write(ch["data"])

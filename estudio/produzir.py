@@ -167,6 +167,7 @@ class Producao:
             self.log("Escolhendo a pauta dos Shorts…")
             temas = R.escolher_pauta(self.manchetes(), self.historico_texto(7), n, self.modelo)
         for k, t in enumerate(temas, 1):
+            t["tema"] = t.get("tema", "").replace("*", "")
             self.log(f"Short {k}/{len(temas)}: {t['tema']}")
             extra = buscar_na_web(f"Notícias de hoje sobre: {t['tema']}. Liste fatos com fonte e link.", self.modelo) if CFG["busca_web_mistral"] else ""
             usuario = R.prompt("short", tema=t["tema"], angulo=t.get("angulo", ""), hoje=f"{self.dia:%d/%m/%Y}",
@@ -203,7 +204,7 @@ class Producao:
                 "\nResponda: {\"temas\": [{\"tema\", \"angulo\", \"ids\": [...], \"votacao_id\": \"opcional\"}]}"
             from .llm import conversar_json
             esc = conversar_json(R.sistema(), usuario, self.modelo, 0.3, 2000, rotulo="pauta_longo").get("temas", [{}])[0]
-            tema, ids = esc.get("tema", "tema do dia"), esc.get("ids", [])
+            tema, ids = esc.get("tema", "tema do dia").replace("*", ""), esc.get("ids", [])
             vid = esc.get("votacao_id")
             if vid and votacoes: extra_prompt = self.injetar_placar(molde, vid)
         self.log(f"  tema: {tema}")
