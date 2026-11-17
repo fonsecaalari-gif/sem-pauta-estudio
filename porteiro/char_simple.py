@@ -3,73 +3,90 @@ from PIL import Image, ImageDraw
 
 BASE_W, BASE_H = 360, 540
 
-SKINS = {"porteiro": (222, 184, 152), "morador": (216, 178, 148)}
-HAIRS = {"porteiro": (40, 34, 30), "morador": (168, 168, 172)}
-SHIRTS = {"porteiro": (36, 52, 92), "morador": (86, 66, 52)}
-PANTS = {"porteiro": (28, 32, 48), "morador": (48, 48, 58)}
+CHARACTERS = {
+    "vigia": {"skin": (157,151,132), "hair": (25,27,31), "shirt": (38,48,58), "pants": (25,29,38), "accent": (173,132,67)},
+    "inquilina": {"skin": (191,171,153), "hair": (48,35,42), "shirt": (76,58,67), "pants": (43,42,53), "accent": (112,132,119)},
+    "menino": {"skin": (183,157,139), "hair": (35,30,29), "shirt": (66,76,91), "pants": (39,43,55), "accent": (151,151,164)},
+}
+ALIASES = {"porteiro": "vigia", "morador": "inquilina"}
 
 
-def draw(name="porteiro", scale=1.0, expr="neutro", mouth=0.05, blink=False,
-         look=0.0, breath=0.0):
-    img = Image.new("RGBA", (BASE_W, BASE_H), (0, 0, 0, 0))
+def draw(name="vigia", scale=1.0, expr="neutro", mouth=0.05, blink=False, look=0.0, breath=0.0):
+    name = ALIASES.get(name, name)
+    if name not in CHARACTERS:
+        name = "vigia"
+    c = CHARACTERS[name]
+    skin, hair, shirt, pants, accent = c.values()
+    img = Image.new("RGBA", (BASE_W, BASE_H), (0,0,0,0))
     d = ImageDraw.Draw(img)
-    skin = SKINS.get(name, (220, 180, 150))
-    hair = HAIRS.get(name, (40, 34, 30))
-    shirt = SHIRTS.get(name, (50, 60, 90))
-    pants = PANTS.get(name, (40, 40, 55))
+    bob = int(3 * math.sin(breath * 2))
+    cx, hy = BASE_W // 2, 128 + bob
 
-    bob = int(4 * math.sin(breath * 2.0))
-    cx = BASE_W // 2
-    head_cy = 128 + bob
+    d.rounded_rectangle([cx-62,402,cx-22,515], radius=13, fill=pants+(255,))
+    d.rounded_rectangle([cx+22,402,cx+62,515], radius=13, fill=pants+(255,))
+    d.rounded_rectangle([cx-72,500,cx-15,530], radius=10, fill=(19,20,25,255))
+    d.rounded_rectangle([cx+15,500,cx+72,530], radius=10, fill=(19,20,25,255))
+    d.rounded_rectangle([cx-91,205+bob,cx+91,430], radius=38, fill=shirt+(255,))
+    d.rounded_rectangle([cx-126,224+bob,cx-96,382], radius=15, fill=shirt+(255,))
+    d.rounded_rectangle([cx+96,224+bob,cx+126,382], radius=15, fill=shirt+(255,))
+    d.ellipse([cx-130,365+bob,cx-94,402+bob], fill=skin+(255,))
+    d.ellipse([cx+94,365+bob,cx+130,402+bob], fill=skin+(255,))
 
-    # corpo
-    d.rounded_rectangle([cx - 92, 208 + bob, cx + 92, 430], radius=42, fill=shirt + (255,))
-    d.rounded_rectangle([cx - 60, 400, cx - 24, 540], radius=14, fill=pants + (255,))
-    d.rounded_rectangle([cx + 24, 400, cx + 60, 540], radius=14, fill=pants + (255,))
-    d.rounded_rectangle([cx - 128, 224 + bob, cx - 100, 380], radius=16, fill=shirt + (255,))
-    d.rounded_rectangle([cx + 100, 224 + bob, cx + 128, 380], radius=16, fill=shirt + (255,))
-    if name == "porteiro":
-        d.rectangle([cx - 92, 300, cx + 92, 316], fill=(24, 34, 64, 255))
-        d.ellipse([cx - 14, 310, cx + 14, 338], fill=(216, 176, 90, 255))
-
-    # cabeca
-    d.ellipse([cx - 82, head_cy - 82, cx + 82, head_cy + 82], fill=skin + (255,))
-    # cabelo / chapeu
-    if name == "porteiro":
-        d.ellipse([cx - 86, head_cy - 100, cx + 86, head_cy - 10], fill=(28, 34, 52, 255))
-        d.rectangle([cx - 96, head_cy - 34, cx + 96, head_cy - 20], fill=(20, 26, 42, 255))
+    if name == "vigia":
+        d.rectangle([cx-90,292+bob,cx+90,307+bob], fill=(22,29,38,255))
+        d.rounded_rectangle([cx+31,250+bob,cx+67,286+bob], radius=5, fill=accent+(255,))
+        d.rounded_rectangle([cx-112,330+bob,cx-94,374+bob], radius=5, fill=(35,38,43,255))
+        d.ellipse([cx-114,324+bob,cx-92,342+bob], fill=accent+(255,))
+    elif name == "inquilina":
+        d.polygon([(cx-90,218+bob),(cx-45,235+bob),(cx,340+bob),(cx+48,235+bob),(cx+90,218+bob),(cx+70,390),(cx-70,390)], fill=(48,39,48,255))
+        d.ellipse([cx+37,263+bob,cx+61,287+bob], fill=accent+(255,))
     else:
-        d.ellipse([cx - 84, head_cy - 88, cx + 84, head_cy - 8], fill=hair + (255,))
-        d.ellipse([cx - 78, head_cy - 70, cx + 78, head_cy + 6], fill=skin + (255,))
+        d.rounded_rectangle([cx-27,210+bob,cx+27,235+bob], radius=8, fill=accent+(255,))
+        d.line([(cx,230+bob),(cx-18,263+bob),(cx,280+bob),(cx+18,263+bob),(cx,230+bob)], fill=(190,185,177,255), width=5)
 
-    # sobrancelhas
-    brow_y = head_cy - 34 if expr == "surpresa" else head_cy - 26
+    d.rectangle([cx-25,184+bob,cx+25,226+bob], fill=skin+(255,))
+    d.ellipse([cx-82,hy-82,cx+82,hy+82], fill=skin+(255,))
+    if name == "vigia":
+        d.pieslice([cx-88,hy-102,cx+88,hy+25],180,360,fill=hair+(255,))
+        d.rectangle([cx-91,hy-31,cx+91,hy-20], fill=(31,39,48,255))
+    elif name == "inquilina":
+        d.ellipse([cx-91,hy-99,cx+91,hy+76], fill=hair+(255,))
+        d.ellipse([cx-73,hy-75,cx+73,hy+77], fill=skin+(255,))
+        d.polygon([(cx-72,hy-45),(cx-50,hy-93),(cx+3,hy-78),(cx+66,hy-98),(cx+78,hy-34),(cx+47,hy-54),(cx-5,hy-36)], fill=hair+(255,))
+        d.ellipse([cx-91,hy-10,cx-58,hy+91], fill=hair+(255,))
+        d.ellipse([cx+58,hy-10,cx+91,hy+91], fill=hair+(255,))
+    else:
+        d.ellipse([cx-85,hy-96,cx+85,hy+15], fill=hair+(255,))
+        d.polygon([(cx-82,hy-35),(cx-58,hy-93),(cx-12,hy-75),(cx+35,hy-97),(cx+83,hy-40),(cx+50,hy-56),(cx,hy-42)], fill=hair+(255,))
+
+    brow_y = hy-34 if expr in ("surpresa","assustado") else hy-26
     if expr == "brava":
-        d.line([(cx - 52, head_cy - 40), (cx - 16, head_cy - 28)], fill=hair + (255,), width=9)
-        d.line([(cx + 16, head_cy - 28), (cx + 52, head_cy - 40)], fill=hair + (255,), width=9)
+        d.line([(cx-52,hy-40),(cx-16,hy-28)], fill=hair+(255,), width=8)
+        d.line([(cx+16,hy-28),(cx+52,hy-40)], fill=hair+(255,), width=8)
     else:
-        d.line([(cx - 50, brow_y), (cx - 18, brow_y)], fill=hair + (255,), width=8)
-        d.line([(cx + 18, brow_y), (cx + 50, brow_y)], fill=hair + (255,), width=8)
-
-    # olhos
-    look_px = int(look * 14)
-    eye_dy = -6 if expr == "surpresa" else 0
-    for ex in (cx - 38, cx + 38):
+        d.line([(cx-50,brow_y),(cx-18,brow_y)], fill=hair+(255,), width=7)
+        d.line([(cx+18,brow_y),(cx+50,brow_y)], fill=hair+(255,), width=7)
+    for ex in (cx-38,cx+38):
         if blink:
-            d.line([(ex - 16, head_cy + eye_dy), (ex + 16, head_cy + eye_dy)], fill=(30, 26, 24, 255), width=7)
+            d.line([(ex-16,hy),(ex+16,hy)], fill=(30,26,24,255), width=6)
         else:
-            eh = 22 if expr == "surpresa" else 16
-            d.ellipse([ex - 16, head_cy - eh + eye_dy, ex + 16, head_cy + eh + eye_dy], fill=(245, 243, 240, 255))
-            d.ellipse([ex - 7 + look_px, head_cy - 7 + eye_dy, ex + 7 + look_px, head_cy + 7 + eye_dy], fill=(28, 26, 30, 255))
-
-    # nariz e boca
-    d.line([(cx, head_cy + 6), (cx - 6, head_cy + 22)], fill=(190, 150, 122, 255), width=5)
-    mh = max(4, int(6 + mouth * 44))
-    mw = 40 if expr != "surpresa" else 30
-    d.ellipse([cx - mw // 2, head_cy + 34, cx + mw // 2, head_cy + 34 + mh], fill=(60, 32, 32, 255))
-    if name == "porteiro":
-        d.rectangle([cx - 26, head_cy + 30, cx + 26, head_cy + 42], fill=(70, 60, 55, 255))
+            eh = 22 if expr in ("surpresa","assustado") else 16
+            d.ellipse([ex-16,hy-eh,ex+16,hy+eh], fill=(235,230,218,255))
+            px = int(look*10)
+            d.ellipse([ex-7+px,hy-7,ex+7+px,hy+7], fill=(22,22,25,255))
+    d.line([(cx,hy+6),(cx-6,hy+22)], fill=(119,91,81,255), width=4)
+    mh = max(4,min(25,int(6+mouth*35)))
+    if expr in ("surpresa","assustado"):
+        mh = max(mh,20)
+    d.ellipse([cx-12,hy+34,cx+12,hy+34+mh], fill=(48,22,26,255))
+    if name == "vigia":
+        d.line([(cx+48,hy-8),(cx+58,hy+8),(cx+50,hy+20)], fill=(92,55,48,255), width=3)
 
     if scale != 1.0:
-        img = img.resize((int(BASE_W * scale), int(BASE_H * scale)), Image.BILINEAR)
+        img = img.resize((max(1,int(BASE_W*scale)),max(1,int(BASE_H*scale))), Image.Resampling.BILINEAR)
     return img
+
+
+if __name__ == "__main__":
+    for personagem in CHARACTERS:
+        draw(personagem).save(f"{personagem}.png")
